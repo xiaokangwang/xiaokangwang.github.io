@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hardware on KKDEV - Shelikhoo &#39;s Personal Blog</title>
+    <link>https://kkdev.org/tags/hardware/</link>
+    <description>Recent content in Hardware on KKDEV - Shelikhoo &#39;s Personal Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 05 Sep 2018 17:57:46 +0800</lastBuildDate>
+    
+	<atom:link href="https://kkdev.org/tags/hardware/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>#Why we must change the way we express our code</title>
+      <link>https://kkdev.org/post/why-we-must-change-the-way-we-express-our-code/</link>
+      <pubDate>Wed, 05 Sep 2018 17:57:46 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/why-we-must-change-the-way-we-express-our-code/</guid>
+      <description>The CPUs are similar to each other, so similar that a compiler like LLVM can support multiply CPU architecture by translating a internal representation of action directly to native instructions without understanding what the program is actually doing. And they share a similar issue: making compromise for compatibility and a deeper cause: binary code distribution &amp;amp; representation.
+The most powerful advantage of a CPU architecture is its software ecosystem. No matter how powerful a device is, without a variety of available software ready for end user, the system is unsuitable unless it meet a power user.</description>
+    </item>
+    
+    <item>
+      <title>#Identify the barrier that reduce the the efficiency of modern computing</title>
+      <link>https://kkdev.org/post/barrier-of-efficiency/</link>
+      <pubDate>Tue, 22 May 2018 08:57:46 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/barrier-of-efficiency/</guid>
+      <description>Modern computing devices are fast, but not as fast as it can be. One of the principle of software programming is abstraction, which make developing software faster and easier than its hardware counterpart, for the price of efficiency if the abstraction is not ideal.
+One of the most inefficient abstraction is sequential execution, which to be fair, cannot blame von-neumann. In the early days of hardware development, there is only so much circuit unit to support one core.</description>
+    </item>
+    
+  </channel>
+</rss>

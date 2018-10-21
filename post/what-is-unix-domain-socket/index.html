@@ -1,0 +1,141 @@
+  <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title> Domain Socket的用途和其对于V2Ray的意义 &middot; KKDEV - Shelikhoo &#39;s Personal Blog </title>
+    
+    <link rel="stylesheet" type="text/css" href="https://kkdev.org//css/uno.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://kkdev.org//css/lightGallery.css" />
+    
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+    <link href="" rel="alternate" type="application/rss+xml" title="KKDEV - Shelikhoo &#39;s Personal Blog" />
+    
+    <script src="https://kkdev.org//js/jquery.min.js"></script>
+    <script src="https://kkdev.org//js/main.min.js">
+    </script>
+</head>
+
+  <body>
+    <div id="scriptHeader">
+    <span class="mobile btn-mobile-menu">
+            <i class="fa fa-bars btn-mobile-menu__icon"></i>
+            <i class="fa fa-times btn-mobile-close__icon hidden"> </i>
+    </span>
+    <header class="
+        
+            panel-cover panel-cover--collapsed
+        " >
+    <div class="panel-main">
+        <div class="panel-main__inner panel-inverted">
+            <div class="panel-main__content"> 
+                <h1 class="panel-cover__title panel-title">
+                    <a href="https://kkdev.org//"  title="link to homepage for KKDEV - Shelikhoo &#39;s Personal Blog">KKDEV - Shelikhoo &#39;s Personal Blog</a>
+                </h1>
+                <hr class="panel-cover__divider" />
+                <p class="panel-cover__description">  Be chosen to change the world.  </p>
+                <hr class="panel-cover__divider panel-cover__divider--secondary" />
+                <div class="navigation-wrapper">
+                    <nav class="cover-navigation cover-navigation--primary">
+                        <ul class="navigation">
+                            <li class="navigation__item"><a href="https://kkdev.org//#blog" title="link to KKDEV - Shelikhoo &#39;s Personal Blog blog" class="blog-button">Blog</a> </li>
+                            </br>  </ul>
+                    </nav> <nav class="cover-navigation navigation--social">
+    <ul class="navigation">    </br>    </ul>
+</nav>
+ </div>
+            </div>
+        </div>
+        <div class="panel-cover--overlay"></div>
+    </div>
+</header>
+</div>
+<noscript>
+    <style>
+        #scriptHeader {display:none;}
+        .navigation-wrapper{
+            display: block;
+            top: 0;
+        }
+    </style>
+
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url()">
+        <div class="panel-main">
+            <div class="panel-main__inner panel-inverted">
+                <div class="panel-main__content"> 
+                    <h1 class="panel-cover__title panel-title">
+                        <a href="https://kkdev.org//"  title="link to homepage for KKDEV - Shelikhoo &#39;s Personal Blog">KKDEV - Shelikhoo &#39;s Personal Blog</a>
+                    </h1>
+                    <hr class="panel-cover__divider" />
+                    <p class="panel-cover__description">  Be chosen to change the world.  </p>
+                    <hr class="panel-cover__divider panel-cover__divider--secondary" />
+                    <div class="navigation-wrapper">
+                        <nav class="cover-navigation cover-navigation--primary">
+                            <ul class="navigation">
+                                <li class="navigation__item"><a href="https://kkdev.org//#blog" title="link to KKDEV - Shelikhoo &#39;s Personal Blog blog" class="blog-button">Blog</a> </li>
+                                </br>  </ul>
+                        </nav> <nav class="cover-navigation navigation--social">
+    <ul class="navigation">    </br>    </ul>
+</nav>
+ </div>
+                </div>
+            </div>
+            <div class="panel-cover--overlay"></div>
+        </div>
+    </header>
+</noscript>
+
+    <div class="content-wrapper">
+      <div class="content-wrapper__inner">
+        <div class="post">
+          <h1>Domain Socket的用途和其对于V2Ray的意义</h1>
+          <span class="post-date">Wed, Jul 25, 2018</span>
+          <h2>TL;DR</h2>
+
+<p>Domain socket是一种进程间通信机制，本身并不能跨主机通信，并不能直接用于翻墙，它是一种辅助配置的工具。</p>
+
+<h2>长回答</h2>
+
+<p>Unix domain socket 是一种跨进程通信通信协议，主要用于Unix系操作系统下，同一个主机上应用程序之间的通信。在V2Ray中实现了类似于TCP的流式Domain socket协议.</p>
+
+<h2>主要用法和优点</h2>
+
+<h3>用于代理和其他程序之间的本地环回连接</h3>
+
+<p>Domain Socket协议的主要作用是和其他程序交互，这包括nginx等成熟的应用程序，也包括其他用户自己的应用程序。由于Unix domain socket支持基于文件控制访问权限，基于domain socket的协议可以比较有效的控制访问，减少权限控制的难度，减少了网络协议中需要的认证。
+这在多用户环境下十分重要，通过Domain socket可以比较有效和方便的减少在同一个主机下，服务被其他用户访问的情况，及由于不正确配置导致本地服务被代理用户访问的情况。
+当然，在部分环境下，Domain socket不占用本地端口，不需要生成数据包的特点也会是使用其的优点。</p>
+
+<h3>用于解决不同网络命名空间之间通信的问题</h3>
+
+<p>Linux操作系统下进程可以分组件可以处于操作系统中不同的命名空间，使用不同的操作系统环境。由于Unix domain socket是进程间通信方式，和网络并不处于同一个命名空间，因此，可以在使用相同的进程间通信命名空间的同时，使用不同的网络环境。这可以用于将部分程序在不同的网络环境中运行，实现在Linux环境下的分应用代理。</p>
+
+<h2>Domain Socket对于V2Ray的意义</h2>
+
+<p>在Unix环境下，一个比较重要的设计哲学就是每个工具做一个事，并将这个事情做好。V2Ray并不完全遵循这个哲学，而这个哲学也不是完全适合于V2Ray。但是，引入Domain sock是将V2Ray和其他程序进行有效结合的重要方法，使V2Ray更容易和其他程序和项目进行整合。</p>
+
+        </div>
+             </div>
+    </div>
+
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analyzer.kkdev.org/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 7]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//analyzer.kkdev.org/piwik.php?idsite=7" style="border:0;" alt="" /></p></noscript>
+
+
+</body>
+  
+</html>

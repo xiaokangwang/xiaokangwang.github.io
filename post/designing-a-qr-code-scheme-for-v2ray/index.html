@@ -1,0 +1,164 @@
+  <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title> Designing A QR Code Scheme For V2Ray &middot; KKDEV - Shelikhoo &#39;s Personal Blog </title>
+    
+    <link rel="stylesheet" type="text/css" href="https://kkdev.org//css/uno.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://kkdev.org//css/lightGallery.css" />
+    
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+    <link href="" rel="alternate" type="application/rss+xml" title="KKDEV - Shelikhoo &#39;s Personal Blog" />
+    
+    <script src="https://kkdev.org//js/jquery.min.js"></script>
+    <script src="https://kkdev.org//js/main.min.js">
+    </script>
+</head>
+
+  <body>
+    <div id="scriptHeader">
+    <span class="mobile btn-mobile-menu">
+            <i class="fa fa-bars btn-mobile-menu__icon"></i>
+            <i class="fa fa-times btn-mobile-close__icon hidden"> </i>
+    </span>
+    <header class="
+        
+            panel-cover panel-cover--collapsed
+        " >
+    <div class="panel-main">
+        <div class="panel-main__inner panel-inverted">
+            <div class="panel-main__content"> 
+                <h1 class="panel-cover__title panel-title">
+                    <a href="https://kkdev.org//"  title="link to homepage for KKDEV - Shelikhoo &#39;s Personal Blog">KKDEV - Shelikhoo &#39;s Personal Blog</a>
+                </h1>
+                <hr class="panel-cover__divider" />
+                <p class="panel-cover__description">  Be chosen to change the world.  </p>
+                <hr class="panel-cover__divider panel-cover__divider--secondary" />
+                <div class="navigation-wrapper">
+                    <nav class="cover-navigation cover-navigation--primary">
+                        <ul class="navigation">
+                            <li class="navigation__item"><a href="https://kkdev.org//#blog" title="link to KKDEV - Shelikhoo &#39;s Personal Blog blog" class="blog-button">Blog</a> </li>
+                            </br>  </ul>
+                    </nav> <nav class="cover-navigation navigation--social">
+    <ul class="navigation">    </br>    </ul>
+</nav>
+ </div>
+            </div>
+        </div>
+        <div class="panel-cover--overlay"></div>
+    </div>
+</header>
+</div>
+<noscript>
+    <style>
+        #scriptHeader {display:none;}
+        .navigation-wrapper{
+            display: block;
+            top: 0;
+        }
+    </style>
+
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url()">
+        <div class="panel-main">
+            <div class="panel-main__inner panel-inverted">
+                <div class="panel-main__content"> 
+                    <h1 class="panel-cover__title panel-title">
+                        <a href="https://kkdev.org//"  title="link to homepage for KKDEV - Shelikhoo &#39;s Personal Blog">KKDEV - Shelikhoo &#39;s Personal Blog</a>
+                    </h1>
+                    <hr class="panel-cover__divider" />
+                    <p class="panel-cover__description">  Be chosen to change the world.  </p>
+                    <hr class="panel-cover__divider panel-cover__divider--secondary" />
+                    <div class="navigation-wrapper">
+                        <nav class="cover-navigation cover-navigation--primary">
+                            <ul class="navigation">
+                                <li class="navigation__item"><a href="https://kkdev.org//#blog" title="link to KKDEV - Shelikhoo &#39;s Personal Blog blog" class="blog-button">Blog</a> </li>
+                                </br>  </ul>
+                        </nav> <nav class="cover-navigation navigation--social">
+    <ul class="navigation">    </br>    </ul>
+</nav>
+ </div>
+                </div>
+            </div>
+            <div class="panel-cover--overlay"></div>
+        </div>
+    </header>
+</noscript>
+
+    <div class="content-wrapper">
+      <div class="content-wrapper__inner">
+        <div class="post">
+          <h1>Designing A QR Code Scheme For V2Ray</h1>
+          <span class="post-date">Thu, Aug 31, 2017</span>
+          
+
+<p>Scanning QR code to import configure file from computer have been a wanted feature for a long time, but only until very recently, such a possibility were aroused to implement such a functionality.</p>
+
+<p>Before LibV2Ray write a universal, future proof, multipart enabled QR code. Multiply attempt by third-party developer was made to create a QR code representation for a configure file. All previous version of QR code solve all problems they face at that time very successfully, but still at the expense of some problem not significant in their eyes. LibV2Ray Team values your choice and don’t make choice for you unless necessary. To achieve our own goal, we first need to know the existing problems that have to be challenged with our new design.</p>
+
+<h2 id="existing-problems">Existing Problems</h2>
+
+<p>But the first difficulty they could face is represent such a long configure file into a single QR code the payload of which usually face a constraint of about 1024 bytes. The larger code could exist but can become very hard to scan even with idealized tool and environment. Previous version of developers have no choice but reduce the setting carried by their QR code scheme. This could be justified if there are other way to configure the tool or the underlying engine can only be configured with that amount of settings. Take shadowrocket favor vmess scheme for example, it can carry 4 defined distinct field while V2Ray can accept at least 409 type of settings. It very clear that with such a range of selection cannot carry what V2Ray has to offer and greatly narrowed the user&rsquo;s choice. If a QR code can’t carry everything it&rsquo;s underlay engine can present, it isn’t a universal QR code for config files.</p>
+
+<p>The second difficulty that a QR code scheme needs to deal with is time. If a QR code scheme have to be changed from to time in order to handle new features added to the engine, such a scheme can become difficult to catch up with especially after this QR code have been used in more than one projects that is developed independent of each other. Since all QR codes looks the same, it is better if they they same works. Takes V2RayNG as an example, to handle V2Ray Websocket transport, a new field have been added to the internal configure format but this change isn’t reflected in V2RayNG favor vmess scheme QR code. Even if such a field is added to QR code, it could take additional delay to make all clients that understands such a QR code scheme to adapt to this additional change. A design like this isn’t future proof and require constant work to keep it up to date with internal engine’s progress.</p>
+
+<p>The third problem is the root issue for all problems above. If we encode all possibility into a single QR code, it can be too large to scan or cannot be generated at all. To prevent such a problem, QR code scheme have to either reduce the domain of settings or have to find a way to workaround single QR code limitation.</p>
+
+<h2 id="one-solution-to-all-problems">One solution to all problems</h2>
+
+<p>With all previous attempts at mind, we have to develope a new way to store the informations in a config file. It have to be universal, and future proof. To achieve this goal, we have to remove the constraints setted by fitting a informations into a single QR code. This constraints is most relevant to QR codes that prints to paper and expect a general QR code scanner that connected to internet, which can be solved by pointing it an url where further information can be acquired. For QR codes expected to be shown at computer and scanned by a semi-offline device with special software installed, such a limit is no longer a hard one.</p>
+
+<p>A Simple Split can be an easy move but since it can be hard for user to identify which code is scanned and which is not, it could come into a situation where user cannot find the code missed and have to scan all code to finish the transfer. This can be a very unpleasant experience and have to be avoided.</p>
+
+<p>To make user experience less frustration during the transfer, we came to the idea of forward error correction, in which user can scan whatever next QR code is and expect progress, the painful situation is expected to solve.</p>
+
+<p>With compressing and other miniaturize method, we can encode a much larger domain of config settings into our QR code scheme. And by larger, we means ALL. With all hard work to unleash the possibility, there is no longer any reason to narrow the selection.</p>
+
+<h2 id="what-we-have-right-now">What we have, Right now</h2>
+
+<p>The definition of LibV2Ray QR code scheme can be found at <a href="https://github.com/xiaokangwang/V2RayConfigureFileUtil">https://github.com/xiaokangwang/V2RayConfigureFileUtil</a>. Here is a sample explation:</p>
+
+<p>Each decode LibV2Ray QR code come with a signature of “libv2ray:?” at the beginner of every QR code. If you are designer of a client with libv2ray built into your project, you should use a library assisted decoding for any QR code come with such a signature. Otherwise, an error should be displayed to inform user of situation.</p>
+
+<p>Rest of chars in the QR code are base91 encoded binary with a protocol buffer with a structure of <a href="https://github.com/xiaokangwang/V2RayConfigureFileUtil/blob/master/encoding/QRCode.proto">LibV2RayQRCode</a>.
+Within this structure, whether a segmentation is performed, how many pieces exists and how many pieces is sufficient to decode the config file is present. As well as segment wide checksum and configure file wide checksum.</p>
+
+<p>Once sufficient pieces of payload is scanned and collected, we will reconstruct the configure file. The configure file is hold with an additional protocol buffer as <a href="https://github.com/xiaokangwang/V2RayConfigureFileUtil/blob/master/encoding/LibV2RayPackedConfig.proto">LibV2RayPackedConfig</a> in which the formart of configure file is included as well as compression info.</p>
+
+<p>If you are using a libv2ray assisted QR code decoding, a callback should have been made once all these step is finished and ask you to save the configure file you just scanned.</p>
+
+<h2 id="what-to-expect">What to expect</h2>
+
+<p>As of now, an experiential QR scan interface is included in V2RayGO and other clients is advised to follow.</p>
+
+<p>Meanwhile, a dedicated QR code generater for LibV2RayQR code will needs to exist in order to finish the ecosystem of LibV2Ray QR code scheme. A command line interface of such a <a href="https://github.com/xiaokangwang/V2RayConfigureFileUtil">tool</a> do exist but there should be no user willing to learn a command line tool for generating a QR code which is intended to simplify the work for them not add to it.</p>
+
+<p>A website is planned to solve this problem, in which user can upload their existing config file and expect rest of work down by this automated tool.</p>
+
+<p>One more thing, when the libv2ray config file format was first introduced, user are expected to write their own config and check it themselves. Too many power were given to config files which can be bad if we don’t give user a chance to check the file. So, a new config file format is planned to restrict the power of such a configure file and keep as many choice as possible. Once such a format is available, it will be possible for our version of V2Ray to show up at app store as a limited configure will not have the capacity that apple bars.</p>
+
+        </div>
+             </div>
+    </div>
+
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analyzer.kkdev.org/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 7]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//analyzer.kkdev.org/piwik.php?idsite=7" style="border:0;" alt="" /></p></noscript>
+
+
+</body>
+  
+</html>

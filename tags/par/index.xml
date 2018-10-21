@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Par on KKDEV - Shelikhoo &#39;s Personal Blog</title>
+    <link>https://kkdev.org/tags/par/</link>
+    <description>Recent content in Par on KKDEV - Shelikhoo &#39;s Personal Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 08 Aug 2015 08:31:32 +0800</lastBuildDate>
+    
+	<atom:link href="https://kkdev.org/tags/par/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>$Par2文件的故事 和 #如何使用par2工具</title>
+      <link>https://kkdev.org/post/par-why/</link>
+      <pubDate>Sat, 08 Aug 2015 08:31:32 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/par-why/</guid>
+      <description>Par2文件是用于修复文件中出现的损坏数据的文件类型。
+Par代表 Parity Volume Set Specification。
+历史 在Usernet时代，当时的人会Usernet上分享一些文件，无论是当时的网络还是现在的网络在稳定性上都有极大的问题，因此下载到的别人分享的文件时常会有问题。当时的网络速度很慢，再下载一次的过程很漫长而且相当烦人。当然最烦人的当属上传的时候就有问题，再下载还是错的，只能要求对方再发一次。这个问题困扰了很多人。
+直到Par2文件的出现（之前还有一种Par文件，不过因为时代过于久远，不再介绍）
+简介 Par2通过Reed–Solomon算法，计算出被保护文件的恢复数据。当文件下载完成后，先利用不包含恢复数据的par2文件校验，在校验完成后能够给出需要的恢复文件块数。只要根据需要下载需要的恢复数据即可。
+要是恢复数据也出错了怎么办？不用担心，仅仅是恢复数据有错误的一部分不能用，其他没有错误的部分还能继续用。
+当然，可以任意指定恢复数据的大小和数量（当然是恢复数据越大能恢复的数据越多了）
+用法（高级） 在Linux下，使用par2工具就可以轻而易举的创建par2文件，并利用par2文件和其他恢复数据对文件进行恢复。
+par2 c : 创建par2和修复文件
+par2 v ： 验证文件的完整性
+par2 r ： 利用par2文件和恢复数据对文件进行恢复
+-r 指定恢复数据的最大恢复比例
+还有更多的选项，在安装par2后使用man par2命令查看</description>
+    </item>
+    
+  </channel>
+</rss>

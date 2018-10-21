@@ -1,0 +1,139 @@
+  <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title> #为什么电脑运行的很慢 &middot; KKDEV - Shelikhoo &#39;s Personal Blog </title>
+    
+    <link rel="stylesheet" type="text/css" href="https://kkdev.org//css/uno.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://kkdev.org//css/lightGallery.css" />
+    
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+    <link href="" rel="alternate" type="application/rss+xml" title="KKDEV - Shelikhoo &#39;s Personal Blog" />
+    
+    <script src="https://kkdev.org//js/jquery.min.js"></script>
+    <script src="https://kkdev.org//js/main.min.js">
+    </script>
+</head>
+
+  <body>
+    <div id="scriptHeader">
+    <span class="mobile btn-mobile-menu">
+            <i class="fa fa-bars btn-mobile-menu__icon"></i>
+            <i class="fa fa-times btn-mobile-close__icon hidden"> </i>
+    </span>
+    <header class="
+        
+            panel-cover panel-cover--collapsed
+        " >
+    <div class="panel-main">
+        <div class="panel-main__inner panel-inverted">
+            <div class="panel-main__content"> 
+                <h1 class="panel-cover__title panel-title">
+                    <a href="https://kkdev.org//"  title="link to homepage for KKDEV - Shelikhoo &#39;s Personal Blog">KKDEV - Shelikhoo &#39;s Personal Blog</a>
+                </h1>
+                <hr class="panel-cover__divider" />
+                <p class="panel-cover__description">  Be chosen to change the world.  </p>
+                <hr class="panel-cover__divider panel-cover__divider--secondary" />
+                <div class="navigation-wrapper">
+                    <nav class="cover-navigation cover-navigation--primary">
+                        <ul class="navigation">
+                            <li class="navigation__item"><a href="https://kkdev.org//#blog" title="link to KKDEV - Shelikhoo &#39;s Personal Blog blog" class="blog-button">Blog</a> </li>
+                            </br>  </ul>
+                    </nav> <nav class="cover-navigation navigation--social">
+    <ul class="navigation">    </br>    </ul>
+</nav>
+ </div>
+            </div>
+        </div>
+        <div class="panel-cover--overlay"></div>
+    </div>
+</header>
+</div>
+<noscript>
+    <style>
+        #scriptHeader {display:none;}
+        .navigation-wrapper{
+            display: block;
+            top: 0;
+        }
+    </style>
+
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url()">
+        <div class="panel-main">
+            <div class="panel-main__inner panel-inverted">
+                <div class="panel-main__content"> 
+                    <h1 class="panel-cover__title panel-title">
+                        <a href="https://kkdev.org//"  title="link to homepage for KKDEV - Shelikhoo &#39;s Personal Blog">KKDEV - Shelikhoo &#39;s Personal Blog</a>
+                    </h1>
+                    <hr class="panel-cover__divider" />
+                    <p class="panel-cover__description">  Be chosen to change the world.  </p>
+                    <hr class="panel-cover__divider panel-cover__divider--secondary" />
+                    <div class="navigation-wrapper">
+                        <nav class="cover-navigation cover-navigation--primary">
+                            <ul class="navigation">
+                                <li class="navigation__item"><a href="https://kkdev.org//#blog" title="link to KKDEV - Shelikhoo &#39;s Personal Blog blog" class="blog-button">Blog</a> </li>
+                                </br>  </ul>
+                        </nav> <nav class="cover-navigation navigation--social">
+    <ul class="navigation">    </br>    </ul>
+</nav>
+ </div>
+                </div>
+            </div>
+            <div class="panel-cover--overlay"></div>
+        </div>
+    </header>
+</noscript>
+
+    <div class="content-wrapper">
+      <div class="content-wrapper__inner">
+        <div class="post">
+          <h1>#为什么电脑运行的很慢</h1>
+          <span class="post-date">Mon, Aug 31, 2015</span>
+          <p>在这篇文章中我主要想大致的说一下电脑运行慢的原因及相应的对策。</p>
+
+<p>首先要考虑的问题即是内存是否过小的问题。</p>
+
+<p>对于内存的大小是否已经对电脑的运行产生影响的最好的判定方法是检查电脑页面错误(page fault)的数量，其中 Major page fault 对电脑性能的影响最为显著。</p>
+
+<p>Major page fault 在程序访问一块目前不在物理内存上的逻辑内存地址时发生。为了保障系统的稳定运行，现代操作系统在硬盘上划出个区域作为页面文件(交换分区/文件)，当内存不足时，将不活跃的程序的内存中的数据置出至硬盘中的相应区域，将物理內存留给活跃的程序。防止物理内存不足以至必须结束一些程存才能保持运行的情况。当一个程序的内存被置出到硬盘后，这个程存仍有可能运行，这时如果这个程序要访问一块己经置出到硬盘的内存时就会发生Major page fault ,这时这个程序将被内核接管，程序的执行中断，就算时间片还有也必须等待其所要访问的內存完成加载之后才能继续运行。对于这段时间一般不会很长，但是当多次此类行为发生时,就会表现为程序运行不流畅。</p>
+
+<p>使用ps -aux -o main_flt,maj_flt 查看页面错误情况。</p>
+
+<p>其次,影响电脑运行速率的因素还有当前CPU，硬盘的负载情况。绝大多数程序都能对于较慢的网络做出应对，但是当其他的处理设备运行较慢时并不能给出合理的提示。</p>
+
+<p>使用iostat命令查看当前的硬盘使用状态，使用htop监视CPU的使用情况。</p>
+
+<p>同时，还有一些容易被忽略的因素同样对系统的性能有影响，就是系统中存在的函数钩子。杀毒软件和其他希望控制系统的运行的程序会通过函数钩子完成对系统的控制用来实现一些其他方式无法达到的功能。</p>
+
+<p>函数钩子即让程序在调用系统调用（也可以是其他程序的函数）之前或之后运行一段代码，并由这段代码决定是否继续这个调用。这个功能被杀毒软件用来阻止病毒，在病毒保证杀毒软件在病毒运行之前有机会阻止其的运行，但是在这个过程中也耗费了时间。通常，这段时间不是很长，但是如果这个功能被滥用，有过多的钩子时，系统的运行速率会显著下降。因此应该只安装一个杀毒软件，不要安装多个。安装多个杀毒软件并不能提高杀毒效果。</p>
+
+<p>在进行非3D显示时，显示卡性能对电脑的影响并不显著。</p>
+
+<p>Edit: 在电脑散热出现问题时，CPU和自动降频，这时电脑速度会有显著降低。Thanks for feedback from XiaoLan</p>
+
+        </div>
+             </div>
+    </div>
+
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analyzer.kkdev.org/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 7]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//analyzer.kkdev.org/piwik.php?idsite=7" style="border:0;" alt="" /></p></noscript>
+
+
+</body>
+  
+</html>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on KKDEV - Shelikhoo &#39;s Personal Blog</title>
+    <link>https://kkdev.org/categories/</link>
+    <description>Recent content in Categories on KKDEV - Shelikhoo &#39;s Personal Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 05 Sep 2018 17:57:46 +0800</lastBuildDate>
+    
+	<atom:link href="https://kkdev.org/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>#</title>
+      <link>https://kkdev.org/categories/#/</link>
+      <pubDate>Wed, 05 Sep 2018 17:57:46 +0800</pubDate>
+      
+      <guid>https://kkdev.org/categories/#/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Android</title>
+      <link>https://kkdev.org/categories/android/</link>
+      <pubDate>Wed, 08 Nov 2017 15:57:43 +0800</pubDate>
+      
+      <guid>https://kkdev.org/categories/android/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Development</title>
+      <link>https://kkdev.org/categories/development/</link>
+      <pubDate>Sun, 21 Oct 2018 20:00:00 +0800</pubDate>
+      
+      <guid>https://kkdev.org/categories/development/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Learn</title>
+      <link>https://kkdev.org/categories/learn/</link>
+      <pubDate>Sat, 08 Aug 2015 08:31:32 +0800</pubDate>
+      
+      <guid>https://kkdev.org/categories/learn/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>V2ray</title>
+      <link>https://kkdev.org/categories/v2ray/</link>
+      <pubDate>Sun, 21 Oct 2018 20:00:00 +0800</pubDate>
+      
+      <guid>https://kkdev.org/categories/v2ray/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vison</title>
+      <link>https://kkdev.org/categories/vison/</link>
+      <pubDate>Wed, 05 Sep 2018 17:57:46 +0800</pubDate>
+      
+      <guid>https://kkdev.org/categories/vison/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>心灵碎片</title>
+      <link>https://kkdev.org/categories/%E5%BF%83%E7%81%B5%E7%A2%8E%E7%89%87/</link>
+      <pubDate>Wed, 29 Jul 2015 21:15:51 +0800</pubDate>
+      
+      <guid>https://kkdev.org/categories/%E5%BF%83%E7%81%B5%E7%A2%8E%E7%89%87/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

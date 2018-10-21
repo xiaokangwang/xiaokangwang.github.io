@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on KKDEV - Shelikhoo &#39;s Personal Blog</title>
+    <link>https://kkdev.org/tags/</link>
+    <description>Recent content in Tags on KKDEV - Shelikhoo &#39;s Personal Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 20 Jan 2015 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://kkdev.org/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title></title>
+      <link>https://kkdev.org/tags/</link>
+      <pubDate>Tue, 20 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/tags/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Android</title>
+      <link>https://kkdev.org/tags/android/</link>
+      <pubDate>Wed, 08 Nov 2017 15:57:43 +0800</pubDate>
+      
+      <guid>https://kkdev.org/tags/android/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Bitcoin</title>
+      <link>https://kkdev.org/tags/bitcoin/</link>
+      <pubDate>Tue, 20 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/tags/bitcoin/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Development</title>
+      <link>https://kkdev.org/tags/development/</link>
+      <pubDate>Sun, 21 Oct 2018 20:00:00 +0800</pubDate>
+      
+      <guid>https://kkdev.org/tags/development/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Explain</title>
+      <link>https://kkdev.org/tags/explain/</link>
+      <pubDate>Wed, 25 Jul 2018 03:16:20 +0800</pubDate>
+      
+      <guid>https://kkdev.org/tags/explain/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Hardware</title>
+      <link>https://kkdev.org/tags/hardware/</link>
+      <pubDate>Wed, 05 Sep 2018 17:57:46 +0800</pubDate>
+      
+      <guid>https://kkdev.org/tags/hardware/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Mitm</title>
+      <link>https://kkdev.org/tags/mitm/</link>
+      <pubDate>Sun, 21 Oct 2018 20:00:00 +0800</pubDate>
+      
+      <guid>https://kkdev.org/tags/mitm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Par</title>
+      <link>https://kkdev.org/tags/par/</link>
+      <pubDate>Sat, 08 Aug 2015 08:31:32 +0800</pubDate>
+      
+      <guid>https://kkdev.org/tags/par/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Qr Code</title>
+      <link>https://kkdev.org/tags/qr-code/</link>
+      <pubDate>Thu, 31 Aug 2017 22:18:59 +0800</pubDate>
+      
+      <guid>https://kkdev.org/tags/qr-code/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Rfc</title>
+      <link>https://kkdev.org/tags/rfc/</link>
+      <pubDate>Sun, 03 Sep 2017 17:58:20 +0800</pubDate>
+      
+      <guid>https://kkdev.org/tags/rfc/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Scheme</title>
+      <link>https://kkdev.org/tags/scheme/</link>
+      <pubDate>Thu, 31 Aug 2017 22:18:59 +0800</pubDate>
+      
+      <guid>https://kkdev.org/tags/scheme/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Software</title>
+      <link>https://kkdev.org/tags/software/</link>
+      <pubDate>Wed, 05 Sep 2018 17:57:46 +0800</pubDate>
+      
+      <guid>https://kkdev.org/tags/software/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Speed</title>
+      <link>https://kkdev.org/tags/speed/</link>
+      <pubDate>Sun, 21 Oct 2018 20:00:00 +0800</pubDate>
+      
+      <guid>https://kkdev.org/tags/speed/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>V2ray</title>
+      <link>https://kkdev.org/tags/v2ray/</link>
+      <pubDate>Sun, 21 Oct 2018 20:00:00 +0800</pubDate>
+      
+      <guid>https://kkdev.org/tags/v2ray/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>建站</title>
+      <link>https://kkdev.org/tags/%E5%BB%BA%E7%AB%99/</link>
+      <pubDate>Mon, 22 Jun 2015 14:25:56 +0800</pubDate>
+      
+      <guid>https://kkdev.org/tags/%E5%BB%BA%E7%AB%99/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

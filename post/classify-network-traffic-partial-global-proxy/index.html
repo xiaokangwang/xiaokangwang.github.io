@@ -1,0 +1,220 @@
+  <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title> #Classify and discriminate network traffic to enable partial global proxy in Linux using cgroup,iptables,redsocks &middot; KKDEV - Shelikhoo &#39;s Personal Blog </title>
+    
+    <link rel="stylesheet" type="text/css" href="https://kkdev.org//css/uno.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://kkdev.org//css/lightGallery.css" />
+    
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+    <link href="" rel="alternate" type="application/rss+xml" title="KKDEV - Shelikhoo &#39;s Personal Blog" />
+    
+    <script src="https://kkdev.org//js/jquery.min.js"></script>
+    <script src="https://kkdev.org//js/main.min.js">
+    </script>
+</head>
+
+  <body>
+    <div id="scriptHeader">
+    <span class="mobile btn-mobile-menu">
+            <i class="fa fa-bars btn-mobile-menu__icon"></i>
+            <i class="fa fa-times btn-mobile-close__icon hidden"> </i>
+    </span>
+    <header class="
+        
+            panel-cover panel-cover--collapsed
+        " >
+    <div class="panel-main">
+        <div class="panel-main__inner panel-inverted">
+            <div class="panel-main__content"> 
+                <h1 class="panel-cover__title panel-title">
+                    <a href="https://kkdev.org//"  title="link to homepage for KKDEV - Shelikhoo &#39;s Personal Blog">KKDEV - Shelikhoo &#39;s Personal Blog</a>
+                </h1>
+                <hr class="panel-cover__divider" />
+                <p class="panel-cover__description">  Be chosen to change the world.  </p>
+                <hr class="panel-cover__divider panel-cover__divider--secondary" />
+                <div class="navigation-wrapper">
+                    <nav class="cover-navigation cover-navigation--primary">
+                        <ul class="navigation">
+                            <li class="navigation__item"><a href="https://kkdev.org//#blog" title="link to KKDEV - Shelikhoo &#39;s Personal Blog blog" class="blog-button">Blog</a> </li>
+                            </br>  </ul>
+                    </nav> <nav class="cover-navigation navigation--social">
+    <ul class="navigation">    </br>    </ul>
+</nav>
+ </div>
+            </div>
+        </div>
+        <div class="panel-cover--overlay"></div>
+    </div>
+</header>
+</div>
+<noscript>
+    <style>
+        #scriptHeader {display:none;}
+        .navigation-wrapper{
+            display: block;
+            top: 0;
+        }
+    </style>
+
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url()">
+        <div class="panel-main">
+            <div class="panel-main__inner panel-inverted">
+                <div class="panel-main__content"> 
+                    <h1 class="panel-cover__title panel-title">
+                        <a href="https://kkdev.org//"  title="link to homepage for KKDEV - Shelikhoo &#39;s Personal Blog">KKDEV - Shelikhoo &#39;s Personal Blog</a>
+                    </h1>
+                    <hr class="panel-cover__divider" />
+                    <p class="panel-cover__description">  Be chosen to change the world.  </p>
+                    <hr class="panel-cover__divider panel-cover__divider--secondary" />
+                    <div class="navigation-wrapper">
+                        <nav class="cover-navigation cover-navigation--primary">
+                            <ul class="navigation">
+                                <li class="navigation__item"><a href="https://kkdev.org//#blog" title="link to KKDEV - Shelikhoo &#39;s Personal Blog blog" class="blog-button">Blog</a> </li>
+                                </br>  </ul>
+                        </nav> <nav class="cover-navigation navigation--social">
+    <ul class="navigation">    </br>    </ul>
+</nav>
+ </div>
+                </div>
+            </div>
+            <div class="panel-cover--overlay"></div>
+        </div>
+    </header>
+</noscript>
+
+    <div class="content-wrapper">
+      <div class="content-wrapper__inner">
+        <div class="post">
+          <h1>#Classify and discriminate network traffic to enable partial global proxy in Linux using cgroup,iptables,redsocks</h1>
+          <span class="post-date">Sat, Apr 2, 2016</span>
+          <p>Some of my friends ask me to play minecraft with them. “Great!”, I said as minecraft can be running natively in Linux, which is a prerequisite for me  to join.  No Longer before I downloaded it, I encounter a problem, it doesn’t honor system’s proxy setting and will not run unless it can contact its server and Internet on my computer is provided by a socks5 proxy.</p>
+
+<p>While a VPN can do the work without much exploration, I decided to seek a way to solve this problem in a more elegant way. Since the minecraft multi-user Server is running in Asia, while all my servers are in Europe,  VPN will force all traffic to make their journey from China to Europe and then Singapore. Since the minecraft server we setup can listen on ipv6, and therefore can be connected directly. This will make a lot of unnecessary delay to game.<br />
+Also, I have a lot of software that is capable of working with socks5 and have been configure to do so. I don’t wants to force these software to be forced to use proxy as they can handle the network more efficiently. And additional configure cost can be prevented.</p>
+
+<p>The solution should satisfy these requirements:</p>
+
+<ul>
+<li>Enable me to play minecraft</li>
+<li>Do not interface with my established system and other softwares</li>
+<li>Minimal burden to system</li>
+</ul>
+
+<p>There is a few way to do this:</p>
+
+<ul>
+<li>Running software in an isolated environment where network configure can be done separately</li>
+<li>Interrupt system call and make a special implementation of network</li>
+<li>(Modifying the game is not considered)</li>
+</ul>
+
+<p>With some research, I found these solutions:
+* Running proxychains to hook sockets call
+* Running a VM to support an different network stack
+* Classify and route traffic on system differently</p>
+
+<p>Since minecraft is written in Java and JVM is just too complex, I don’t know if hook sockets call can actually do the magic. VM have a significant performance penalty, making it impossible to run a 3D game. So I have no choice but to classify traffic.</p>
+
+<p>I could set the route rule by monitor the game and set rule by IP or other characteris, but it is to complicated and a waste of time. While running in different user might help, non-root user can encounter problem when display content on another user’s desktop and certainly I am not going to run a game in written in Java as root. And, there seems to have no other option.</p>
+
+<p>However, as the best OS for Power Users and Developers, Linux have never abridged its user’s imagination.  Linux come with a lot of builtin function that can help user in the most direct and fundamental way.</p>
+
+<p>Cgroup a Linux kernel function that can assign group to process and limit or control them separately. It powered lxc, docker and a lot other softwares and help them to build their isolation.</p>
+
+<p>This time cgroup come to resort for me.</p>
+
+<p>To classify network by cgroup, you will need the latest release of <a href="http://www.netfilter.org/projects/iptables/downloads.html">iptables</a></p>
+
+<p>To create a cgroup run:</p>
+
+<pre><code># cgcreate -a $(whoami) -g net_cls:$cgroupname
+</code></pre>
+
+<p>Where $cgroupname is your intended name for your cgroup that will use that proxy separately.</p>
+
+<p>The ‘net_cls’ before colon sign means we wants to classify its traffic.</p>
+
+<p>And run a shell inside it:</p>
+
+<pre><code># cgexec  -g net_cls:$cgroupname bash
+</code></pre>
+
+<p>And now, the traffic from the the cgroup we just created can be marked(is not mark in iptables!) a class. But we haven&rsquo;t defined what mark we should append to it. So we run:</p>
+
+<pre><code># cd /sys/fs/cgroup/net_cls/$cgroupname;
+# echo 0x00110011 &gt; net_cls.classid;
+</code></pre>
+
+<p>And now the traffic is marked.</p>
+
+<p>To forward traffic to a local transparent proxy run:</p>
+
+<pre><code># iptables -t nat -N REDSOCKS #(create a new chain)
+# iptables -t nat -A REDSOCKS -d 127.0.0.0/8 -j RETURN #(local traffic will not go through proxy)
+# iptables -t nat -A REDSOCKS -p tcp -j REDIRECT --to-ports 11111 #(forward anything else to local transparent proxy)
+# iptables -t nat -A OUTPUT -p tcp -m cgroup --cgroup 0x00110011 -j REDSOCKS #(if a traffic come from cgroup and marked with 0x00110011 it will be put into the chain was just created)
+</code></pre>
+
+<p>And finally, run <a href="https://github.com/darkk/redsocks">redsocks</a> to convert transparent proxy to socks5</p>
+
+<pre><code>./redsocks -c conf.conf
+</code></pre>
+
+<p>With configure:</p>
+
+<pre><code>base {
+	log_debug =off;
+	log_info = on;
+	log = stderr;
+	daemon = off;
+	redirector = iptables;
+}
+
+redsocks {
+	local_ip = 127.0.0.1;
+	local_port = 11111;
+	ip = 1.2.3.4; /*Your proxy address*/
+	port =12345; /*Your proxy port*/
+	type = socks5;
+}
+
+</code></pre>
+
+<p>There is also <a href="http://www.evolware.org/?p=293">another method</a> to do this.</p>
+
+<p>This article is made possible by:
+<a href="https://wiki.archlinux.org/index.php/cgroups">https://wiki.archlinux.org/index.php/cgroups</a>
+<a href="http://www.evolware.org/?p=369">http://www.evolware.org/?p=369</a>
+<a href="https://github.com/darkk/redsocks/blob/master/README">https://github.com/darkk/redsocks/blob/master/README</a>
+<a href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/sec-net_cls.html">https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/sec-net_cls.html</a>
+<a href="http://serverfault.com/questions/560179/route-traffic-from-a-cgroup-via-a-specific-network-interface">http://serverfault.com/questions/560179/route-traffic-from-a-cgroup-via-a-specific-network-interface</a>
+<a href="http://man7.org/linux/man-pages/man8/tc-cgroup.8.html">http://man7.org/linux/man-pages/man8/tc-cgroup.8.html</a></p>
+
+        </div>
+             </div>
+    </div>
+
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analyzer.kkdev.org/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 7]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//analyzer.kkdev.org/piwik.php?idsite=7" style="border:0;" alt="" /></p></noscript>
+
+
+</body>
+  
+</html>

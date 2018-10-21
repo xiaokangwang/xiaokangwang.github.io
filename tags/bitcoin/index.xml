@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Bitcoin on KKDEV - Shelikhoo &#39;s Personal Blog</title>
+    <link>https://kkdev.org/tags/bitcoin/</link>
+    <description>Recent content in Bitcoin on KKDEV - Shelikhoo &#39;s Personal Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 20 Jan 2015 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://kkdev.org/tags/bitcoin/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>$Why Bitcoin didn&#39;t become the next-gen currency</title>
+      <link>https://kkdev.org/post/2015-01-20-why-bitcoin-didnt-become-the-next-gen-currency/</link>
+      <pubDate>Tue, 20 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2015-01-20-why-bitcoin-didnt-become-the-next-gen-currency/</guid>
+      <description>Bitcoin is a wonderful project, it make money decentralized, created a currency that no one can control. But why didn&amp;rsquo;t it become the next generation currency?
+##Mining Progress
+Traditionally, the production process of currency should be hard and the difficulty should be same for everyone. For example, gold was once a currency that used globally, and recognized universally. The term mining origin from this.
+Mining process of Bitcoin is a similar process.</description>
+    </item>
+    
+  </channel>
+</rss>

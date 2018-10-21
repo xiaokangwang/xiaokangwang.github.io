@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Qr Code on KKDEV - Shelikhoo &#39;s Personal Blog</title>
+    <link>https://kkdev.org/tags/qr-code/</link>
+    <description>Recent content in Qr Code on KKDEV - Shelikhoo &#39;s Personal Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 31 Aug 2017 22:18:59 +0800</lastBuildDate>
+    
+	<atom:link href="https://kkdev.org/tags/qr-code/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Designing A QR Code Scheme For V2Ray</title>
+      <link>https://kkdev.org/post/designing-a-qr-code-scheme-for-v2ray/</link>
+      <pubDate>Thu, 31 Aug 2017 22:18:59 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/designing-a-qr-code-scheme-for-v2ray/</guid>
+      <description>Scanning QR code to import configure file from computer have been a wanted feature for a long time, but only until very recently, such a possibility were aroused to implement such a functionality.
+Before LibV2Ray write a universal, future proof, multipart enabled QR code. Multiply attempt by third-party developer was made to create a QR code representation for a configure file. All previous version of QR code solve all problems they face at that time very successfully, but still at the expense of some problem not significant in their eyes.</description>
+    </item>
+    
+  </channel>
+</rss>

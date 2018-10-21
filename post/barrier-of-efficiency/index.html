@@ -1,0 +1,127 @@
+  <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title> #Identify the barrier that reduce the the efficiency of modern computing &middot; KKDEV - Shelikhoo &#39;s Personal Blog </title>
+    
+    <link rel="stylesheet" type="text/css" href="https://kkdev.org//css/uno.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://kkdev.org//css/lightGallery.css" />
+    
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+    <link href="" rel="alternate" type="application/rss+xml" title="KKDEV - Shelikhoo &#39;s Personal Blog" />
+    
+    <script src="https://kkdev.org//js/jquery.min.js"></script>
+    <script src="https://kkdev.org//js/main.min.js">
+    </script>
+</head>
+
+  <body>
+    <div id="scriptHeader">
+    <span class="mobile btn-mobile-menu">
+            <i class="fa fa-bars btn-mobile-menu__icon"></i>
+            <i class="fa fa-times btn-mobile-close__icon hidden"> </i>
+    </span>
+    <header class="
+        
+            panel-cover panel-cover--collapsed
+        " >
+    <div class="panel-main">
+        <div class="panel-main__inner panel-inverted">
+            <div class="panel-main__content"> 
+                <h1 class="panel-cover__title panel-title">
+                    <a href="https://kkdev.org//"  title="link to homepage for KKDEV - Shelikhoo &#39;s Personal Blog">KKDEV - Shelikhoo &#39;s Personal Blog</a>
+                </h1>
+                <hr class="panel-cover__divider" />
+                <p class="panel-cover__description">  Be chosen to change the world.  </p>
+                <hr class="panel-cover__divider panel-cover__divider--secondary" />
+                <div class="navigation-wrapper">
+                    <nav class="cover-navigation cover-navigation--primary">
+                        <ul class="navigation">
+                            <li class="navigation__item"><a href="https://kkdev.org//#blog" title="link to KKDEV - Shelikhoo &#39;s Personal Blog blog" class="blog-button">Blog</a> </li>
+                            </br>  </ul>
+                    </nav> <nav class="cover-navigation navigation--social">
+    <ul class="navigation">    </br>    </ul>
+</nav>
+ </div>
+            </div>
+        </div>
+        <div class="panel-cover--overlay"></div>
+    </div>
+</header>
+</div>
+<noscript>
+    <style>
+        #scriptHeader {display:none;}
+        .navigation-wrapper{
+            display: block;
+            top: 0;
+        }
+    </style>
+
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url()">
+        <div class="panel-main">
+            <div class="panel-main__inner panel-inverted">
+                <div class="panel-main__content"> 
+                    <h1 class="panel-cover__title panel-title">
+                        <a href="https://kkdev.org//"  title="link to homepage for KKDEV - Shelikhoo &#39;s Personal Blog">KKDEV - Shelikhoo &#39;s Personal Blog</a>
+                    </h1>
+                    <hr class="panel-cover__divider" />
+                    <p class="panel-cover__description">  Be chosen to change the world.  </p>
+                    <hr class="panel-cover__divider panel-cover__divider--secondary" />
+                    <div class="navigation-wrapper">
+                        <nav class="cover-navigation cover-navigation--primary">
+                            <ul class="navigation">
+                                <li class="navigation__item"><a href="https://kkdev.org//#blog" title="link to KKDEV - Shelikhoo &#39;s Personal Blog blog" class="blog-button">Blog</a> </li>
+                                </br>  </ul>
+                        </nav> <nav class="cover-navigation navigation--social">
+    <ul class="navigation">    </br>    </ul>
+</nav>
+ </div>
+                </div>
+            </div>
+            <div class="panel-cover--overlay"></div>
+        </div>
+    </header>
+</noscript>
+
+    <div class="content-wrapper">
+      <div class="content-wrapper__inner">
+        <div class="post">
+          <h1>#Identify the barrier that reduce the the efficiency of modern computing</h1>
+          <span class="post-date">Tue, May 22, 2018</span>
+          <p>Modern computing devices are fast, but not as fast as it can be. One of the principle of software programming is abstraction, which make  developing software faster and easier than its hardware counterpart, for the price of efficiency if the abstraction is not ideal.</p>
+
+<p>One of the most inefficient abstraction is sequential execution, which to be fair, cannot blame von-neumann. In the early days of hardware development, there is only so much circuit unit to support one core. However, today’s hardware is more capable and can support up to thousand of cores. With sequential execution, all non-synchronous operation must be manually initialized and synchronized, which can be hard to done right. This is the reason why today’s programs often running on an single thread. For hardwares, sequential execution is one of the problems, too, for the sequential operation have no practical usage unless combined with branch operations, which can cause the pipeline,which attempt to parallelize the execution of instructions to break, as it must keep the abstraction of sequential execution. The problem isn’t stopped here, as the program is executed in sequential, the meaning of any symbol can change with time and it could be hard to track the meaning of any symbol, forcing the processor to give up the possibility to predict the outcome of branching condition. This limitation is not only apply to conditional jump instructions, but also can apply to other implied branching such as permission checking. With this abstraction exist, hardware or optimiser cannot rearrange the order software code is running to increase the performance.</p>
+
+<p>The second reason program can only run in an reduced speed is linear memory abstraction. Which is again, an legacy from early hardware. Today’s computer often abstract memory address to be an linear, addressable and any given program at any given time, can access all memory it have be allocated. This forced hardware to be designed in a way that it can allow synchronous main memory access and make guess about what memory program will need after the program have started execution. This neglected the nature of cache exists in progressor and limited the ability for processor to load data into cache while another program is executing. And since program run in virtual memory space, check and protection must take place before any memory access, force processor to include mmu to reduce the need to call operating system on page fault.  For softwares, too, with inability to forcest memory access, program have to manage memory by reference counting, or garbage collector or ownership or manually, which is not standardized and blackbox to processor,  which is not accelerated and have additional burden on engineer or runtime.</p>
+
+<p>The third reason reason programs are running slower than it can is because of abstraction of uniform ability of processing units. With the requirement to implement identical functionality on all processing cores, it could be infeasible to significantly increase the number of cores, or be forced to limit the functionality of entire product(happened on CPU, and GPU respectively). Even if the device has additional programmable core to process data(such as both CPU and GPU), it usually require separate tool to develop on them which make it hard for developers to actually use all processing power available unless make significant investment.</p>
+
+<p>In the upcoming articles, I will discuss other factors that abridge today’s computing device’s power. And at the end of this series, I will purpose a new way of hardware abstraction, hoping it could address all problems mentioned.</p>
+
+        </div>
+             </div>
+    </div>
+
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analyzer.kkdev.org/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 7]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//analyzer.kkdev.org/piwik.php?idsite=7" style="border:0;" alt="" /></p></noscript>
+
+
+</body>
+  
+</html>

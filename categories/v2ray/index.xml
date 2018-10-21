@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>V2ray on KKDEV - Shelikhoo &#39;s Personal Blog</title>
+    <link>https://kkdev.org/categories/v2ray/</link>
+    <description>Recent content in V2ray on KKDEV - Shelikhoo &#39;s Personal Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 21 Oct 2018 20:00:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://kkdev.org/categories/v2ray/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>V2Ray MITM 功能的性能分析</title>
+      <link>https://kkdev.org/post/the-speed-compare-for-v2ray-mitm/</link>
+      <pubDate>Sun, 21 Oct 2018 20:00:00 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/the-speed-compare-for-v2ray-mitm/</guid>
+      <description>前段时间收到了Victoria Raymond的要求，对V2Ray MITM功能的速度情况进行了在自家网络下的测试。这些测试说明了这个功能在特定网络条件下的实际速度，并加入了对于其提速原理的解释。 如果还不了解V2Ray的MITM，请查看我协助Kiri完成的V2Ray MITM配置说明。
+测试内容 首先是测试内容。针对于这个功能的实现原理，本文作者分别进行了对于连接建立速度和HTTP2网页展示速度的测试。
+连接建立速度是指自浏览器开始尝试建立到某个站点首个连接到首个请求结果开始返回的速度。 这个速度主要影响网站首个页面的加载时间。因此，这个时间越长，你就会在输入网站地址之后回车后，或者点开调转至另外一个网站的链接时，面对一个白色的屏幕等待更长的时间。
+而HTTP2网站展示速度测试则反映了对于启用了HTTP2的网站的页面加载速度。 HTTP2是一个比较新的网页内容传输协议，可以想象其会随着时间变得更加流行。其的一大改进就是提升了传输碎片化内容时的速度。由于V2Ray MITM不支持有效兼容HTTP2协议，因此无法利用这一新协议的特性，影响了内容传输的速度。
+至于内容传输速度，由于V2Ray MITM仅减少了TLS加密环节，其对大文件传输速度没有影响，故没有测试。
+测试方法 为了有效测试V2Ray MITM对于性能的提升和影响， 本次测试选用了网络性能很一般的远端服务器以便得出最显著的效果。在测试期间的ping数据和测试结果一通呈现。 服务器配置方法与Kiri的教程中的方法相同。
+连接建立速度测试 首先通过 HEAD https://kkdev.org/cdn-cgi/trace 和 HEAD https://kkdev.org:8443/cdn-cgi/trace 请求来获取其和Cloudflare服务器建立连接并进行HEAD请求的速度。 能够使用这种方法进行测试是因为V2Ray配置文件中的设置会且仅会对443端口的流量进行MITM攻击，而8443是Cloudflare接受的HTTPS端口,可以被正常访问而不会被MITM。通过轮流对这两个地址进行访问，保证了在测试时MITM组和对照组网络环境基本相同。Cloudflare的连接速度很快，可以基本上忽略和其在传输数据时的速度，因此在其上下载短内容的速度和连接建立速度相同。
+HTTP2网站展示速度测试 通过计算在不同代理设置下使用最新版火狐浏览器访问 https://http2.golang.org/gophertiles 的时间来计算加载支持HTTP2的内容时使用的时间。 这个时间通过浏览器 performance.getEntriesByType(&amp;ldquo;navigation&amp;rdquo;)[0].domComplete 的返回值确定。 由于技术限制，无法轮番进行不同配置文件的测试，但是通过在同一天内的较短时间内测试保证测试结果基本反映了在相同网络环境下的网络性能。
+测试结果 连接建立速度测试结果 在测试过程中反映网络质量的ping的结果如下：
+2802 packets transmitted, 2423 received, 13% packet loss, time 2809639ms rtt min/avg/max/mdev = 343.576/352.594/521.293/17.872 ms  The Probability Distribution of Time for First Byte for V2Ray Original Configure and V2Ray MITM Configure</description>
+    </item>
+    
+    <item>
+      <title>Domain Socket的用途和其对于V2Ray的意义</title>
+      <link>https://kkdev.org/post/what-is-unix-domain-socket/</link>
+      <pubDate>Wed, 25 Jul 2018 03:16:20 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/what-is-unix-domain-socket/</guid>
+      <description>TL;DR Domain socket是一种进程间通信机制，本身并不能跨主机通信，并不能直接用于翻墙，它是一种辅助配置的工具。
+长回答 Unix domain socket 是一种跨进程通信通信协议，主要用于Unix系操作系统下，同一个主机上应用程序之间的通信。在V2Ray中实现了类似于TCP的流式Domain socket协议.
+主要用法和优点 用于代理和其他程序之间的本地环回连接 Domain Socket协议的主要作用是和其他程序交互，这包括nginx等成熟的应用程序，也包括其他用户自己的应用程序。由于Unix domain socket支持基于文件控制访问权限，基于domain socket的协议可以比较有效的控制访问，减少权限控制的难度，减少了网络协议中需要的认证。 这在多用户环境下十分重要，通过Domain socket可以比较有效和方便的减少在同一个主机下，服务被其他用户访问的情况，及由于不正确配置导致本地服务被代理用户访问的情况。 当然，在部分环境下，Domain socket不占用本地端口，不需要生成数据包的特点也会是使用其的优点。
+用于解决不同网络命名空间之间通信的问题 Linux操作系统下进程可以分组件可以处于操作系统中不同的命名空间，使用不同的操作系统环境。由于Unix domain socket是进程间通信方式，和网络并不处于同一个命名空间，因此，可以在使用相同的进程间通信命名空间的同时，使用不同的网络环境。这可以用于将部分程序在不同的网络环境中运行，实现在Linux环境下的分应用代理。
+Domain Socket对于V2Ray的意义 在Unix环境下，一个比较重要的设计哲学就是每个工具做一个事，并将这个事情做好。V2Ray并不完全遵循这个哲学，而这个哲学也不是完全适合于V2Ray。但是，引入Domain sock是将V2Ray和其他程序进行有效结合的重要方法，使V2Ray更容易和其他程序和项目进行整合。</description>
+    </item>
+    
+    <item>
+      <title>关于V2RayNG在Play商店上的开发者帐号变更为其UI部分开发者的声明</title>
+      <link>https://kkdev.org/post/ng-transfer-to-dev-account/</link>
+      <pubDate>Wed, 08 Nov 2017 15:57:43 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/ng-transfer-to-dev-account/</guid>
+      <description>在未来的一段时间内，V2RayNG在Play上的开发者将变为其UI部分开发者所拥有的帐号CaptainIron (Telegram用户名为：d4boy)。
+本次转移的原因在于这位开发者希望在其的App中加入应用内支付，而这需要开发者拥有自己的Play帐号并设置自己的支付方式。 在本次转移完成后，应用的开发者将显示为CaptainIron，而我将不再拥有对其商店描述和上架程序的管理权限。
+由于我已经不再管理此程序的上架信息，请将您在使用这个程序的时候遇到的问题反馈给CaptainIron(Telegram: d4boy)。 同时，由于不再管理此程序上架的程序文件，这个程序的功能和安全性不会拥有来自我的背书和承诺，我也不会为此应用的行为和内容负责。 您在购买或订阅了此App内的服务时发生的交易不直接和我产生关联，您不应该期待来自我的功能和稳定性更新 ，也不应该以在此应用的付款的情况期待来自我的服务和支持。
+此后，V2RayNG的更新将由其的开发者完全控制，而其的开发者应该自行处理来自其用户的相关反馈和支持请求。 这包括Telegram群组和来自其他渠道的和V2RayNG有关的求助和问题解答， 请不要对于和其有关的内容以包括但不限于私聊，@和或其他提及的方式请求和期待我的支持。
+在AGPL协议的许可范围下，其开发者可以继续使用来自我的libv2ray并得到其的功能和稳定性更新。 这意味着V2RayNG将必须继续保持开源，公布源代码并允许来自其他人的修改和分发修改版的程序。
+每个开发者开发程序都需要有自己的动机和动力，有些开发者可能愿意在不接受任何形式的报酬下开发并共享程序， 但是更多的开发者需要金钱的驱动才会持续不断为用户提供高质量的程序。 缺少利益支持的任何活动都不可能长久持续，尤其是极其枯燥且需要特殊的工具和技术才能完成的软件和或硬件开发工作。 希望大家不要对开发者决定加入收费功能的决定做出过多的负面评价，每一个都要为一个原因而努力 ，而金钱则是对于很多人来说最容易接受的原因，也是最容易让他们感到自己工作的意义的方法。 对于他们来说，这是对于他们使用自己的周末和夜晚甚至是午休和 课间在电脑和手机前对着一个枯燥的界面和晦涩难懂的术语挥洒自己的时间的最好的理由 （P.S.:不过V2RayNG开发者貌似是在工作地点摸鱼进行开发， 并没有使用自己的私人时间，可能并不适用上面的描述23333333）。
+Update: 转移已经完成。
+Update: 已经提交了转移申请，可能需要几天的时间才会生效。
+Shelikhoo</description>
+    </item>
+    
+    <item>
+      <title>V2Ray RFC: V2Ray Pipe Transport Proposal</title>
+      <link>https://kkdev.org/post/v2ray-pipe-transport/</link>
+      <pubDate>Sun, 03 Sep 2017 17:58:20 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/v2ray-pipe-transport/</guid>
+      <description>V2Ray is designed to be a flexible network tool for developers. However, in term of developer friendliness it have suffered a bad reputation as being hard to master both for user and third-party developers.
+Here, I would like to propose a new stub transport that is intended to reduce the difficulty for developing a transport for V2Ray, and remove the necessity of commitment for development. Pipe transport use operating system’s fork and/or unix domain socket capability.</description>
+    </item>
+    
+    <item>
+      <title>Designing A QR Code Scheme For V2Ray</title>
+      <link>https://kkdev.org/post/designing-a-qr-code-scheme-for-v2ray/</link>
+      <pubDate>Thu, 31 Aug 2017 22:18:59 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/designing-a-qr-code-scheme-for-v2ray/</guid>
+      <description>Scanning QR code to import configure file from computer have been a wanted feature for a long time, but only until very recently, such a possibility were aroused to implement such a functionality.
+Before LibV2Ray write a universal, future proof, multipart enabled QR code. Multiply attempt by third-party developer was made to create a QR code representation for a configure file. All previous version of QR code solve all problems they face at that time very successfully, but still at the expense of some problem not significant in their eyes.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,151 @@
+  <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title> 我就是我? &middot; KKDEV - Shelikhoo &#39;s Personal Blog </title>
+    
+    <link rel="stylesheet" type="text/css" href="https://kkdev.org//css/uno.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://kkdev.org//css/lightGallery.css" />
+    
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+    <link href="" rel="alternate" type="application/rss+xml" title="KKDEV - Shelikhoo &#39;s Personal Blog" />
+    
+    <script src="https://kkdev.org//js/jquery.min.js"></script>
+    <script src="https://kkdev.org//js/main.min.js">
+    </script>
+</head>
+
+  <body>
+    <div id="scriptHeader">
+    <span class="mobile btn-mobile-menu">
+            <i class="fa fa-bars btn-mobile-menu__icon"></i>
+            <i class="fa fa-times btn-mobile-close__icon hidden"> </i>
+    </span>
+    <header class="
+        
+            panel-cover panel-cover--collapsed
+        " >
+    <div class="panel-main">
+        <div class="panel-main__inner panel-inverted">
+            <div class="panel-main__content"> 
+                <h1 class="panel-cover__title panel-title">
+                    <a href="https://kkdev.org//"  title="link to homepage for KKDEV - Shelikhoo &#39;s Personal Blog">KKDEV - Shelikhoo &#39;s Personal Blog</a>
+                </h1>
+                <hr class="panel-cover__divider" />
+                <p class="panel-cover__description">  Be chosen to change the world.  </p>
+                <hr class="panel-cover__divider panel-cover__divider--secondary" />
+                <div class="navigation-wrapper">
+                    <nav class="cover-navigation cover-navigation--primary">
+                        <ul class="navigation">
+                            <li class="navigation__item"><a href="https://kkdev.org//#blog" title="link to KKDEV - Shelikhoo &#39;s Personal Blog blog" class="blog-button">Blog</a> </li>
+                            </br>  </ul>
+                    </nav> <nav class="cover-navigation navigation--social">
+    <ul class="navigation">    </br>    </ul>
+</nav>
+ </div>
+            </div>
+        </div>
+        <div class="panel-cover--overlay"></div>
+    </div>
+</header>
+</div>
+<noscript>
+    <style>
+        #scriptHeader {display:none;}
+        .navigation-wrapper{
+            display: block;
+            top: 0;
+        }
+    </style>
+
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url()">
+        <div class="panel-main">
+            <div class="panel-main__inner panel-inverted">
+                <div class="panel-main__content"> 
+                    <h1 class="panel-cover__title panel-title">
+                        <a href="https://kkdev.org//"  title="link to homepage for KKDEV - Shelikhoo &#39;s Personal Blog">KKDEV - Shelikhoo &#39;s Personal Blog</a>
+                    </h1>
+                    <hr class="panel-cover__divider" />
+                    <p class="panel-cover__description">  Be chosen to change the world.  </p>
+                    <hr class="panel-cover__divider panel-cover__divider--secondary" />
+                    <div class="navigation-wrapper">
+                        <nav class="cover-navigation cover-navigation--primary">
+                            <ul class="navigation">
+                                <li class="navigation__item"><a href="https://kkdev.org//#blog" title="link to KKDEV - Shelikhoo &#39;s Personal Blog blog" class="blog-button">Blog</a> </li>
+                                </br>  </ul>
+                        </nav> <nav class="cover-navigation navigation--social">
+    <ul class="navigation">    </br>    </ul>
+</nav>
+ </div>
+                </div>
+            </div>
+            <div class="panel-cover--overlay"></div>
+        </div>
+    </header>
+</noscript>
+
+    <div class="content-wrapper">
+      <div class="content-wrapper__inner">
+        <div class="post">
+          <h1>我就是我?</h1>
+          <span class="post-date">Fri, Jun 19, 2015</span>
+          <p>这篇文章中，我将谈论有关数字身份的相关问题，并介绍我个人承认的识别识别我的方法，防止不法分子和合法部门对于伪造我的言论。</p>
+
+<p>目前，伪造身份的事情还不常发生，但是确实不是没有，我个人也对于自己的数字身份十分紧张，生怕那天别人冒充我去用我的身份给别人发消息，给自己和别人造成麻烦（当然，你不用担心，鉴于实际上没有什么人会真的理我，实际上不是什么大问题）。</p>
+
+<p>应该如何确定和自己聊天的那个人的确就是我呢，一般人都会通过看聊天软件，邮件收件箱上的提示，可是这并不是实际上有效的做法，因为本来这些邮箱和聊天软件的认证系统就有他们自身的缺陷，而显示的内容也在很大程度上取决于聊天软件和邮件的提供商，这些人或者企业或多或少的可以决定你最终看到的内容，尽管一般的说，这些提示或多或少的能反映对方的身份，但是并不能真正的保护个人的身份不会被冒名顶替。</p>
+
+<p>这是，就需要密码学出场了，像DSA,RSA(用于电子签名)，ECDSA，EdDSA都是用于数字签名的密码学算法，综合起来，它们的共性在于通过一系列运算，可以生成一个只有密钥的持有者可以生成的数字，而其他的人则可以通过由这个密钥派生出的公钥来验证。而这个生成的数字就叫做密码学数字签名，破解它的难度在于数学计算的难度，其的安全性本身并不依赖于人。</p>
+
+<p>当下，很多程序都内置了加密系统，但是就像 <a href="https://technet.microsoft.com/en-us/library/hh278941.aspx">这个文章</a> 中提到的，加密系统的安全性主要决定于谁持有加密密钥，仅仅加密还不够，还要自己持有密钥。因为在大多数系统中，密钥的持有者并不是和你进行聊天的人，而是服务器的运营者，因此尽管其采用了加密，但是保证的只是你和运营商（服务的提供商）之间通信的安全，但是并不能保证你和对方的通信安全。</p>
+
+<p>然而，一些程序却很好的解决了这个问题，比如GnuPG。通过密码学手段，GnuPG以一种并不令人生畏的方式解决了这些问题。</p>
+
+<p>因为签名和签名的验证完全在客户端进行，服务器并不掌握用户的密钥，也因此不能冒名顶替用户。在签名的同时，还可以进行加密，因此不仅不能伪造消息连消息的内容都看不到了。</p>
+
+<p>顺便提一句，为什么一开始设计的时候不设计成这样呢？最开始的时候，计算机的运算性能有限，加密实际上会消耗更多的计算资源，而且当时的电脑大多用来处理商业数据，如果说老板知道员工的工作通信还情有可原的话，目前的服务提供商知道用户的数据就是完全没有理由的了。</p>
+
+<p>实际上，因为很多数据根本就没有加密，得到通信的内容实际上并不比运行一个软件困难。</p>
+
+<p>P.S.:尽管很多国产网盘声称用户的数据是加密的，我还没有见到一个国产网盘把加密密钥完全交给用户的。</p>
+
+<p>P.P.S:如何确定是否是真的用户控制密钥呢？如果仅仅向邮箱发封邮件，向手机发个短信就能重置密码，而且网盘内容一个不少的话，绝对密钥不是自己控制的。</p>
+
+<p>最后，给出我的GPG密钥：</p>
+
+<p>pub   4096R/709ABD21 2014-03-09 [expires: 2019-03-23]</p>
+
+<p>Key fingerprint = 0602 B44C 2B5A 8176 62B6  23EA 7791 BDB0 709A BD21</p>
+
+<p>uid       [ultimate] XiaokangWang <a href="mailto:xiaokangwang@outlook.com">xiaokangwang@outlook.com</a></p>
+
+<p>sub   4096R/72D12ABB 2015-01-24 [expires: 2017-01-25]</p>
+
+<p>sub   4096R/929349B7 2015-06-02 [expires: 2019-06-02]</p>
+
+        </div>
+             </div>
+    </div>
+
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analyzer.kkdev.org/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 7]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//analyzer.kkdev.org/piwik.php?idsite=7" style="border:0;" alt="" /></p></noscript>
+
+
+</body>
+  
+</html>

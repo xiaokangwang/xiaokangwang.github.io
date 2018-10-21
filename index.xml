@@ -1,0 +1,690 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+      <title>KKDEV - Shelikhoo &#39;s Personal Blog on KKDEV - Shelikhoo &#39;s Personal Blog </title>
+      <generator uri="https://gohugo.io">Hugo</generator>
+    <link>https://kkdev.org/</link>
+    <language>en-us</language>
+    
+    
+    <updated>Sun, 21 Oct 2018 20:00:00 &#43;0800</updated>
+    
+    <item>
+      <title>V2Ray MITM 功能的性能分析</title>
+      <link>https://kkdev.org/post/the-speed-compare-for-v2ray-mitm/</link>
+      <pubDate>Sun, 21 Oct 2018 20:00:00 &#43;0800</pubDate>
+      
+      <guid>https://kkdev.org/post/the-speed-compare-for-v2ray-mitm/</guid>
+      <description>
+
+&lt;p&gt;前段时间收到了Victoria Raymond的要求，对V2Ray MITM功能的速度情况进行了在自家网络下的测试。这些测试说明了这个功能在特定网络条件下的实际速度，并加入了对于其提速原理的解释。 如果还不了解V2Ray的MITM，请查看我协助Kiri完成的&lt;a href=&#34;https://kirikira.moe/post/30/&#34;&gt;V2Ray MITM配置说明&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h2 id=&#34;测试内容&#34;&gt;测试内容&lt;/h2&gt;
+
+&lt;p&gt;首先是测试内容。针对于这个功能的实现原理，本文作者分别进行了对于连接建立速度和HTTP2网页展示速度的测试。&lt;/p&gt;
+
+&lt;p&gt;连接建立速度是指自浏览器开始尝试建立到某个站点首个连接到首个请求结果开始返回的速度。 这个速度主要影响网站首个页面的加载时间。因此，这个时间越长，你就会在输入网站地址之后回车后，或者点开调转至另外一个网站的链接时，面对一个白色的屏幕等待更长的时间。&lt;/p&gt;
+
+&lt;p&gt;而HTTP2网站展示速度测试则反映了对于启用了HTTP2的网站的页面加载速度。  HTTP2是一个比较新的网页内容传输协议，可以想象其会随着时间变得更加流行。其的一大改进就是提升了传输碎片化内容时的速度。由于V2Ray MITM不支持有效兼容HTTP2协议，因此无法利用这一新协议的特性，影响了内容传输的速度。&lt;/p&gt;
+
+&lt;p&gt;至于内容传输速度，由于V2Ray MITM仅减少了TLS加密环节，其对大文件传输速度没有影响，故没有测试。&lt;/p&gt;
+
+&lt;h2 id=&#34;测试方法&#34;&gt;测试方法&lt;/h2&gt;
+
+&lt;p&gt;为了有效测试V2Ray MITM对于性能的提升和影响， 本次测试选用了网络性能很一般的远端服务器以便得出最显著的效果。在测试期间的ping数据和测试结果一通呈现。 服务器配置方法与Kiri的教程中的方法相同。&lt;/p&gt;
+
+&lt;h3 id=&#34;连接建立速度测试&#34;&gt;连接建立速度测试&lt;/h3&gt;
+
+&lt;p&gt;首先通过 HEAD &lt;a href=&#34;https://kkdev.org/cdn-cgi/trace&#34;&gt;https://kkdev.org/cdn-cgi/trace&lt;/a&gt; 和 HEAD &lt;a href=&#34;https://kkdev.org:8443/cdn-cgi/trace&#34;&gt;https://kkdev.org:8443/cdn-cgi/trace&lt;/a&gt; 请求来获取其和Cloudflare服务器建立连接并进行HEAD请求的速度。 能够使用这种方法进行测试是因为V2Ray配置文件中的设置会且仅会对443端口的流量进行MITM攻击，而8443是Cloudflare接受的HTTPS端口,可以被正常访问而不会被MITM。通过轮流对这两个地址进行访问，保证了在测试时MITM组和对照组网络环境基本相同。Cloudflare的连接速度很快，可以基本上忽略和其在传输数据时的速度，因此在其上下载短内容的速度和连接建立速度相同。&lt;/p&gt;
+
+&lt;h3 id=&#34;http2网站展示速度测试&#34;&gt;HTTP2网站展示速度测试&lt;/h3&gt;
+
+&lt;p&gt;通过计算在不同代理设置下使用最新版火狐浏览器访问 &lt;a href=&#34;https://http2.golang.org/gophertiles&#34;&gt;https://http2.golang.org/gophertiles&lt;/a&gt; 的时间来计算加载支持HTTP2的内容时使用的时间。 这个时间通过浏览器 performance.getEntriesByType(&amp;ldquo;navigation&amp;rdquo;)[0].domComplete 的返回值确定。 由于技术限制，无法轮番进行不同配置文件的测试，但是通过在同一天内的较短时间内测试保证测试结果基本反映了在相同网络环境下的网络性能。&lt;/p&gt;
+
+&lt;h2 id=&#34;测试结果&#34;&gt;测试结果&lt;/h2&gt;
+
+&lt;h3 id=&#34;连接建立速度测试结果&#34;&gt;连接建立速度测试结果&lt;/h3&gt;
+
+&lt;p&gt;在测试过程中反映网络质量的ping的结果如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;2802 packets transmitted, 2423 received, 13% packet loss, time 2809639ms
+rtt min/avg/max/mdev = 343.576/352.594/521.293/17.872 ms
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The Probability Distribution of Time for First Byte for V2Ray Original
+Configure and V2Ray MITM Configure&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://kkdev.org/files/V2Ray/MITM-Speed/conn.svg&#34; alt=&#34;Chart&#34; onerror=&#34;this.src=&#39;/files/V2Ray/MITM-Speed/conn.svg&#39;; this.onerror=null;&#34;  /&gt;&lt;/p&gt;
+
+&lt;p&gt;自结果中可以看出，V2Ray MITM可以有效的减少连接建立时间，将大约3个RTT（ping延迟）（最佳情况）的TLS连接建立和HTTP请求返回时间缩减为和不加密的HTTP相同的1个RTT（最佳情况）。 而在最佳情况之外均有出现需要更多时间的情况发生，而V2Ray Original相比于V2Ray MITM而言则更容易产生非最佳情况，这主要是由于TLS协议握手过程中的丢包对于连接建立时间的影响导致的，由于未被MITM的协议会产生更多的数据包往返，更容易因为丢包减缓速度。&lt;/p&gt;
+
+&lt;h3 id=&#34;http2网站展示速度测试结果&#34;&gt;HTTP2网站展示速度测试结果&lt;/h3&gt;
+
+&lt;p&gt;在测试过程中反映网络质量的ping的结果如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;5550 packets transmitted, 4913 received, 11% packet loss, time 5564244ms
+rtt min/avg/max/mdev = 329.957/350.497/457.037/16.342 ms
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The Probability Distribution of Time for DOM Complete for V2Ray Original
+Configure and V2Ray MITM Configure&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://kkdev.org/files/V2Ray/MITM-Speed/page.svg&#34; alt=&#34;Chart&#34; onerror=&#34;this.src=&#39;/files/V2Ray/MITM-Speed/page.svg&#39;; this.onerror=null;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;可以看到，在启用了http2的网站上，V2Ray MITM的加载速度比V2Ray Original要慢。这主要是由于http2对于网站的加载速度的影响要高于连接建立速度的影响。同时，由于这项测试在浏览器上进行，浏览器会保持和最近访问过的网站的连接，因此连接建立对浏览器网页加载速度的影响较小，图中内容显示连接建立速度对网页加载速度的影响小于http2对于网页加载速度的影响。&lt;/p&gt;
+
+&lt;h2 id=&#34;讨论&#34;&gt;讨论&lt;/h2&gt;
+
+&lt;p&gt;在之前的测试中，我们发现根据不同的网络内容， V2Ray MITM 对实际使用速度的影响可能有益的，也可能是负面的。因此，在使用的过程中，应该仔细分析自己的使用环境和情况，并选择最适合自己的方案。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>#Why we must change the way we express our code</title>
+      <link>https://kkdev.org/post/why-we-must-change-the-way-we-express-our-code/</link>
+      <pubDate>Wed, 05 Sep 2018 17:57:46 &#43;0800</pubDate>
+      
+      <guid>https://kkdev.org/post/why-we-must-change-the-way-we-express-our-code/</guid>
+      <description>&lt;p&gt;The CPUs are similar to each other, so similar that a compiler like LLVM can support multiply CPU architecture by translating a internal representation of action directly to native instructions without understanding what the program is actually doing. And they share a similar issue: making compromise for compatibility and a deeper cause: binary code distribution &amp;amp; representation.&lt;/p&gt;
+
+&lt;p&gt;The most powerful advantage of a CPU architecture is its software ecosystem. No matter how powerful a device is, without a variety of available software ready for end user, the system is unsuitable unless it meet a power user. As for developers, it is hard to develop on a platform with less ideal library and environment support and is, therefore, often choose to adopt their idea to popular platforms. This self-enforcing circle create chicken and egg problem for many new CPU manufacturer,&lt;/p&gt;
+
+&lt;p&gt;Users expect the softwares run on their previous device also run on the one they have just bought, and their old device can run the software designed few years later. The compatibility has given many giant CPU manufacturer a handy monopoly, but also constraint them from making breaking change. Each addition to the instruction set mean a commitment to also support this function in the future, which means a bigger and bigger instruction set, and encumbered speed. As for software developers, this addition to instruction set is also tricky, as their library of choice might not support it, and the software developers have to develop fallback code so that even it is running on a older or low end device the code will still run.&lt;/p&gt;
+
+&lt;p&gt;Both these issue have one root cause in common, the software is often distributed in binary form, which make installation quick, and decreased initial download sizes. However, binary code cannot be easily change once generated and if source isn’t available to end user, only vendor can update it. This force software to die along with vendor, or when the vendor decides to abandon it. And even if the software is an open source one, it still require active man power to maintain it, and there will be significant invest for any power user tring to customize it.&lt;/p&gt;
+
+&lt;p&gt;This article is a follow up article for the problems that abridge today’s computing device’s power. At the end of this series of article, I will propose a way of representing our idea in a form that computer can understand, addressing all problem I have address and showing a way to switch to optimal path that we have not given the chance to choose when computer was first introduced.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Domain Socket的用途和其对于V2Ray的意义</title>
+      <link>https://kkdev.org/post/what-is-unix-domain-socket/</link>
+      <pubDate>Wed, 25 Jul 2018 03:16:20 &#43;0800</pubDate>
+      
+      <guid>https://kkdev.org/post/what-is-unix-domain-socket/</guid>
+      <description>&lt;h2&gt;TL;DR&lt;/h2&gt;
+
+&lt;p&gt;Domain socket是一种进程间通信机制，本身并不能跨主机通信，并不能直接用于翻墙，它是一种辅助配置的工具。&lt;/p&gt;
+
+&lt;h2&gt;长回答&lt;/h2&gt;
+
+&lt;p&gt;Unix domain socket 是一种跨进程通信通信协议，主要用于Unix系操作系统下，同一个主机上应用程序之间的通信。在V2Ray中实现了类似于TCP的流式Domain socket协议.&lt;/p&gt;
+
+&lt;h2&gt;主要用法和优点&lt;/h2&gt;
+
+&lt;h3&gt;用于代理和其他程序之间的本地环回连接&lt;/h3&gt;
+
+&lt;p&gt;Domain Socket协议的主要作用是和其他程序交互，这包括nginx等成熟的应用程序，也包括其他用户自己的应用程序。由于Unix domain socket支持基于文件控制访问权限，基于domain socket的协议可以比较有效的控制访问，减少权限控制的难度，减少了网络协议中需要的认证。
+这在多用户环境下十分重要，通过Domain socket可以比较有效和方便的减少在同一个主机下，服务被其他用户访问的情况，及由于不正确配置导致本地服务被代理用户访问的情况。
+当然，在部分环境下，Domain socket不占用本地端口，不需要生成数据包的特点也会是使用其的优点。&lt;/p&gt;
+
+&lt;h3&gt;用于解决不同网络命名空间之间通信的问题&lt;/h3&gt;
+
+&lt;p&gt;Linux操作系统下进程可以分组件可以处于操作系统中不同的命名空间，使用不同的操作系统环境。由于Unix domain socket是进程间通信方式，和网络并不处于同一个命名空间，因此，可以在使用相同的进程间通信命名空间的同时，使用不同的网络环境。这可以用于将部分程序在不同的网络环境中运行，实现在Linux环境下的分应用代理。&lt;/p&gt;
+
+&lt;h2&gt;Domain Socket对于V2Ray的意义&lt;/h2&gt;
+
+&lt;p&gt;在Unix环境下，一个比较重要的设计哲学就是每个工具做一个事，并将这个事情做好。V2Ray并不完全遵循这个哲学，而这个哲学也不是完全适合于V2Ray。但是，引入Domain sock是将V2Ray和其他程序进行有效结合的重要方法，使V2Ray更容易和其他程序和项目进行整合。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>#Identify the barrier that reduce the the efficiency of modern computing</title>
+      <link>https://kkdev.org/post/barrier-of-efficiency/</link>
+      <pubDate>Tue, 22 May 2018 08:57:46 &#43;0800</pubDate>
+      
+      <guid>https://kkdev.org/post/barrier-of-efficiency/</guid>
+      <description>&lt;p&gt;Modern computing devices are fast, but not as fast as it can be. One of the principle of software programming is abstraction, which make  developing software faster and easier than its hardware counterpart, for the price of efficiency if the abstraction is not ideal.&lt;/p&gt;
+
+&lt;p&gt;One of the most inefficient abstraction is sequential execution, which to be fair, cannot blame von-neumann. In the early days of hardware development, there is only so much circuit unit to support one core. However, today’s hardware is more capable and can support up to thousand of cores. With sequential execution, all non-synchronous operation must be manually initialized and synchronized, which can be hard to done right. This is the reason why today’s programs often running on an single thread. For hardwares, sequential execution is one of the problems, too, for the sequential operation have no practical usage unless combined with branch operations, which can cause the pipeline,which attempt to parallelize the execution of instructions to break, as it must keep the abstraction of sequential execution. The problem isn’t stopped here, as the program is executed in sequential, the meaning of any symbol can change with time and it could be hard to track the meaning of any symbol, forcing the processor to give up the possibility to predict the outcome of branching condition. This limitation is not only apply to conditional jump instructions, but also can apply to other implied branching such as permission checking. With this abstraction exist, hardware or optimiser cannot rearrange the order software code is running to increase the performance.&lt;/p&gt;
+
+&lt;p&gt;The second reason program can only run in an reduced speed is linear memory abstraction. Which is again, an legacy from early hardware. Today’s computer often abstract memory address to be an linear, addressable and any given program at any given time, can access all memory it have be allocated. This forced hardware to be designed in a way that it can allow synchronous main memory access and make guess about what memory program will need after the program have started execution. This neglected the nature of cache exists in progressor and limited the ability for processor to load data into cache while another program is executing. And since program run in virtual memory space, check and protection must take place before any memory access, force processor to include mmu to reduce the need to call operating system on page fault.  For softwares, too, with inability to forcest memory access, program have to manage memory by reference counting, or garbage collector or ownership or manually, which is not standardized and blackbox to processor,  which is not accelerated and have additional burden on engineer or runtime.&lt;/p&gt;
+
+&lt;p&gt;The third reason reason programs are running slower than it can is because of abstraction of uniform ability of processing units. With the requirement to implement identical functionality on all processing cores, it could be infeasible to significantly increase the number of cores, or be forced to limit the functionality of entire product(happened on CPU, and GPU respectively). Even if the device has additional programmable core to process data(such as both CPU and GPU), it usually require separate tool to develop on them which make it hard for developers to actually use all processing power available unless make significant investment.&lt;/p&gt;
+
+&lt;p&gt;In the upcoming articles, I will discuss other factors that abridge today’s computing device’s power. And at the end of this series, I will purpose a new way of hardware abstraction, hoping it could address all problems mentioned.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>关于V2RayNG在Play商店上的开发者帐号变更为其UI部分开发者的声明</title>
+      <link>https://kkdev.org/post/ng-transfer-to-dev-account/</link>
+      <pubDate>Wed, 08 Nov 2017 15:57:43 &#43;0800</pubDate>
+      
+      <guid>https://kkdev.org/post/ng-transfer-to-dev-account/</guid>
+      <description>&lt;p&gt;在未来的一段时间内，V2RayNG在Play上的开发者将变为其UI部分开发者所拥有的帐号CaptainIron (Telegram用户名为：d4boy)。&lt;/p&gt;
+
+&lt;p&gt;本次转移的原因在于这位开发者希望在其的App中加入应用内支付，而这需要开发者拥有自己的Play帐号并设置自己的支付方式。
+在本次转移完成后，应用的开发者将显示为CaptainIron，而我将不再拥有对其商店描述和上架程序的管理权限。&lt;/p&gt;
+
+&lt;p&gt;由于我已经不再管理此程序的上架信息，请将您在使用这个程序的时候遇到的问题反馈给CaptainIron(Telegram: d4boy)。
+同时，由于不再管理此程序上架的程序文件，这个程序的功能和安全性不会拥有来自我的背书和承诺，我也不会为此应用的行为和内容负责。
+您在购买或订阅了此App内的服务时发生的交易不直接和我产生关联，您不应该期待来自我的功能和稳定性更新
+，也不应该以在此应用的付款的情况期待来自我的服务和支持。&lt;/p&gt;
+
+&lt;p&gt;此后，V2RayNG的更新将由其的开发者完全控制，而其的开发者应该自行处理来自其用户的相关反馈和支持请求。
+这包括Telegram群组和来自其他渠道的和V2RayNG有关的求助和问题解答，
+请不要对于和其有关的内容以包括但不限于私聊，@和或其他提及的方式请求和期待我的支持。&lt;/p&gt;
+
+&lt;p&gt;在AGPL协议的许可范围下，其开发者可以继续使用来自我的libv2ray并得到其的功能和稳定性更新。
+这意味着V2RayNG将必须继续保持开源，公布源代码并允许来自其他人的修改和分发修改版的程序。&lt;/p&gt;
+
+&lt;p&gt;每个开发者开发程序都需要有自己的动机和动力，有些开发者可能愿意在不接受任何形式的报酬下开发并共享程序，
+但是更多的开发者需要金钱的驱动才会持续不断为用户提供高质量的程序。
+缺少利益支持的任何活动都不可能长久持续，尤其是极其枯燥且需要特殊的工具和技术才能完成的软件和或硬件开发工作。
+希望大家不要对开发者决定加入收费功能的决定做出过多的负面评价，每一个都要为一个原因而努力
+，而金钱则是对于很多人来说最容易接受的原因，也是最容易让他们感到自己工作的意义的方法。
+对于他们来说，这是对于他们使用自己的周末和夜晚甚至是午休和
+课间在电脑和手机前对着一个枯燥的界面和晦涩难懂的术语挥洒自己的时间的最好的理由
+（P.S.:不过V2RayNG开发者貌似是在工作地点摸鱼进行开发，
+并没有使用自己的私人时间，可能并不适用上面的描述23333333）。&lt;/p&gt;
+
+&lt;p&gt;Update: 转移已经完成。&lt;/p&gt;
+
+&lt;p&gt;Update: 已经提交了转移申请，可能需要几天的时间才会生效。&lt;/p&gt;
+
+&lt;p&gt;Shelikhoo&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>V2Ray RFC: V2Ray Pipe Transport Proposal</title>
+      <link>https://kkdev.org/post/v2ray-pipe-transport/</link>
+      <pubDate>Sun, 03 Sep 2017 17:58:20 &#43;0800</pubDate>
+      
+      <guid>https://kkdev.org/post/v2ray-pipe-transport/</guid>
+      <description>&lt;p&gt;V2Ray is designed to be a flexible network tool for developers. However, in term of developer friendliness it have suffered a bad reputation as being hard to master both for user and third-party developers.&lt;/p&gt;
+
+&lt;p&gt;Here, I would like to propose a new stub transport that is intended to reduce the difficulty for developing a transport for V2Ray, and remove the necessity of commitment for development. Pipe transport use operating system’s fork and/or unix domain socket capability. Allowing developer to experiment with new technology of transport with the need of worrying about V2Ray’s internal API change or framework, making it easier to use V2Ray in combination of other tools. For some tool that cannot integrate with V2Ray’s build infrastructure and other quality control constraints, this will make it easier to distribute third-party developer’s work without reducing v2ray-core’s code base standard.&lt;/p&gt;
+
+&lt;p&gt;Pipe transport can works as both an inbound transport and an outbound transport.&lt;/p&gt;
+
+&lt;p&gt;For inbound transport, only unix domain socket mode is available. V2Ray will listen for an unix domain socket and service at this domain socket. It is possible to set an file mode when specifying this file. An fatal error will be raise if this file location is inaccessible to V2Ray.&lt;/p&gt;
+
+&lt;p&gt;For outbound transport, two mode will be available, fork mode and unix domain socket mode. It is always recommended to use unix domain socket mode whenever possible. While in fork mode, a command is executed and use standard input and standard output as a bidirectional pipe. No additional information for host being connected is provided but argument for exec can be specified. Failed to exec the file is an error for V2Ray. When the process quit, the connection is considered ended. For unix domain socket, a unix domain socket file is connected when an outbound transmit is needed. If the connect is failed, a error will be raised.&lt;/p&gt;
+
+&lt;p&gt;Because of the absent of support for unix domain socket in windows environment, pipe transport can only act as an outbound transport in windows environment.&lt;/p&gt;
+
+&lt;p&gt;Pipe transport can be used as an easy method for configure an transport for experimenting with new technology with V2Ray without risking breaking anything or be forced to match an merging window.&lt;/p&gt;
+
+&lt;p&gt;Pipe transport’s behavior is consistent with proxy command or standard domain socket practice. This will help this new transport to use as many existing tool in unix style as possible. (V2Ray pipe should able to work with ncat out of box.)&lt;/p&gt;
+
+&lt;p&gt;This RFC have been preliminarily approved by V2Ray’s maintainer.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Designing A QR Code Scheme For V2Ray</title>
+      <link>https://kkdev.org/post/designing-a-qr-code-scheme-for-v2ray/</link>
+      <pubDate>Thu, 31 Aug 2017 22:18:59 &#43;0800</pubDate>
+      
+      <guid>https://kkdev.org/post/designing-a-qr-code-scheme-for-v2ray/</guid>
+      <description>
+
+&lt;p&gt;Scanning QR code to import configure file from computer have been a wanted feature for a long time, but only until very recently, such a possibility were aroused to implement such a functionality.&lt;/p&gt;
+
+&lt;p&gt;Before LibV2Ray write a universal, future proof, multipart enabled QR code. Multiply attempt by third-party developer was made to create a QR code representation for a configure file. All previous version of QR code solve all problems they face at that time very successfully, but still at the expense of some problem not significant in their eyes. LibV2Ray Team values your choice and don’t make choice for you unless necessary. To achieve our own goal, we first need to know the existing problems that have to be challenged with our new design.&lt;/p&gt;
+
+&lt;h2 id=&#34;existing-problems&#34;&gt;Existing Problems&lt;/h2&gt;
+
+&lt;p&gt;But the first difficulty they could face is represent such a long configure file into a single QR code the payload of which usually face a constraint of about 1024 bytes. The larger code could exist but can become very hard to scan even with idealized tool and environment. Previous version of developers have no choice but reduce the setting carried by their QR code scheme. This could be justified if there are other way to configure the tool or the underlying engine can only be configured with that amount of settings. Take shadowrocket favor vmess scheme for example, it can carry 4 defined distinct field while V2Ray can accept at least 409 type of settings. It very clear that with such a range of selection cannot carry what V2Ray has to offer and greatly narrowed the user&amp;rsquo;s choice. If a QR code can’t carry everything it&amp;rsquo;s underlay engine can present, it isn’t a universal QR code for config files.&lt;/p&gt;
+
+&lt;p&gt;The second difficulty that a QR code scheme needs to deal with is time. If a QR code scheme have to be changed from to time in order to handle new features added to the engine, such a scheme can become difficult to catch up with especially after this QR code have been used in more than one projects that is developed independent of each other. Since all QR codes looks the same, it is better if they they same works. Takes V2RayNG as an example, to handle V2Ray Websocket transport, a new field have been added to the internal configure format but this change isn’t reflected in V2RayNG favor vmess scheme QR code. Even if such a field is added to QR code, it could take additional delay to make all clients that understands such a QR code scheme to adapt to this additional change. A design like this isn’t future proof and require constant work to keep it up to date with internal engine’s progress.&lt;/p&gt;
+
+&lt;p&gt;The third problem is the root issue for all problems above. If we encode all possibility into a single QR code, it can be too large to scan or cannot be generated at all. To prevent such a problem, QR code scheme have to either reduce the domain of settings or have to find a way to workaround single QR code limitation.&lt;/p&gt;
+
+&lt;h2 id=&#34;one-solution-to-all-problems&#34;&gt;One solution to all problems&lt;/h2&gt;
+
+&lt;p&gt;With all previous attempts at mind, we have to develope a new way to store the informations in a config file. It have to be universal, and future proof. To achieve this goal, we have to remove the constraints setted by fitting a informations into a single QR code. This constraints is most relevant to QR codes that prints to paper and expect a general QR code scanner that connected to internet, which can be solved by pointing it an url where further information can be acquired. For QR codes expected to be shown at computer and scanned by a semi-offline device with special software installed, such a limit is no longer a hard one.&lt;/p&gt;
+
+&lt;p&gt;A Simple Split can be an easy move but since it can be hard for user to identify which code is scanned and which is not, it could come into a situation where user cannot find the code missed and have to scan all code to finish the transfer. This can be a very unpleasant experience and have to be avoided.&lt;/p&gt;
+
+&lt;p&gt;To make user experience less frustration during the transfer, we came to the idea of forward error correction, in which user can scan whatever next QR code is and expect progress, the painful situation is expected to solve.&lt;/p&gt;
+
+&lt;p&gt;With compressing and other miniaturize method, we can encode a much larger domain of config settings into our QR code scheme. And by larger, we means ALL. With all hard work to unleash the possibility, there is no longer any reason to narrow the selection.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-we-have-right-now&#34;&gt;What we have, Right now&lt;/h2&gt;
+
+&lt;p&gt;The definition of LibV2Ray QR code scheme can be found at &lt;a href=&#34;https://github.com/xiaokangwang/V2RayConfigureFileUtil&#34;&gt;https://github.com/xiaokangwang/V2RayConfigureFileUtil&lt;/a&gt;. Here is a sample explation:&lt;/p&gt;
+
+&lt;p&gt;Each decode LibV2Ray QR code come with a signature of “libv2ray:?” at the beginner of every QR code. If you are designer of a client with libv2ray built into your project, you should use a library assisted decoding for any QR code come with such a signature. Otherwise, an error should be displayed to inform user of situation.&lt;/p&gt;
+
+&lt;p&gt;Rest of chars in the QR code are base91 encoded binary with a protocol buffer with a structure of &lt;a href=&#34;https://github.com/xiaokangwang/V2RayConfigureFileUtil/blob/master/encoding/QRCode.proto&#34;&gt;LibV2RayQRCode&lt;/a&gt;.
+Within this structure, whether a segmentation is performed, how many pieces exists and how many pieces is sufficient to decode the config file is present. As well as segment wide checksum and configure file wide checksum.&lt;/p&gt;
+
+&lt;p&gt;Once sufficient pieces of payload is scanned and collected, we will reconstruct the configure file. The configure file is hold with an additional protocol buffer as &lt;a href=&#34;https://github.com/xiaokangwang/V2RayConfigureFileUtil/blob/master/encoding/LibV2RayPackedConfig.proto&#34;&gt;LibV2RayPackedConfig&lt;/a&gt; in which the formart of configure file is included as well as compression info.&lt;/p&gt;
+
+&lt;p&gt;If you are using a libv2ray assisted QR code decoding, a callback should have been made once all these step is finished and ask you to save the configure file you just scanned.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-to-expect&#34;&gt;What to expect&lt;/h2&gt;
+
+&lt;p&gt;As of now, an experiential QR scan interface is included in V2RayGO and other clients is advised to follow.&lt;/p&gt;
+
+&lt;p&gt;Meanwhile, a dedicated QR code generater for LibV2RayQR code will needs to exist in order to finish the ecosystem of LibV2Ray QR code scheme. A command line interface of such a &lt;a href=&#34;https://github.com/xiaokangwang/V2RayConfigureFileUtil&#34;&gt;tool&lt;/a&gt; do exist but there should be no user willing to learn a command line tool for generating a QR code which is intended to simplify the work for them not add to it.&lt;/p&gt;
+
+&lt;p&gt;A website is planned to solve this problem, in which user can upload their existing config file and expect rest of work down by this automated tool.&lt;/p&gt;
+
+&lt;p&gt;One more thing, when the libv2ray config file format was first introduced, user are expected to write their own config and check it themselves. Too many power were given to config files which can be bad if we don’t give user a chance to check the file. So, a new config file format is planned to restrict the power of such a configure file and keep as many choice as possible. Once such a format is available, it will be possible for our version of V2Ray to show up at app store as a limited configure will not have the capacity that apple bars.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>V2RayGO Privacy Policy</title>
+      <link>https://kkdev.org/post/v2raygopp/</link>
+      <pubDate>Fri, 21 Jul 2017 12:49:41 &#43;0800</pubDate>
+      
+      <guid>https://kkdev.org/post/v2raygopp/</guid>
+      <description>&lt;p&gt;V2Ray Team, LibV2Ray Team and V2RayGO Team respect your privacy. V2RayGO do not include any tracking library or service from third party purposefully, but could use third party service to improve your experience. V2RayGO might or might not collect your device identification info, hardware and software info, cash info, and network info, but we will request your consent before upload them to our sever. User can refuse to upload any of these information to our server and continue to use the a limited set of function of our software, once you have consent our upload we will keep uploading indefinitely.&lt;/p&gt;
+
+&lt;p&gt;V2RayGO could also collect and upload following info after you opt-in our User participate Program.
+- Software configure
+- Detailed log
+- Detailed Network Info
+- Feedback you submitted
+- Debug Info
+- Image captured by your camera
+- GPS Data
+- Mobile and Baseband data
+- System log
+- System configure
+- File in your storage
+- Data from your other app
+- Bluetooth data
+- NFC data
+- Your behavior
+All your data uploaded will be encrypted with modern cryptology before being uploaded.&lt;/p&gt;
+
+&lt;p&gt;We might publish non-identificational data from our user and share them with third party. For identificational data, we would never share them to third party without further consent as long as law permit.&lt;/p&gt;
+
+&lt;p&gt;We might update this Privacy Policy without your further consent.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>#Classify and discriminate network traffic to enable partial global proxy in Linux using cgroup,iptables,redsocks</title>
+      <link>https://kkdev.org/post/classify-network-traffic-partial-global-proxy/</link>
+      <pubDate>Sat, 02 Apr 2016 00:00:00 UTC</pubDate>
+      
+      <guid>https://kkdev.org/post/classify-network-traffic-partial-global-proxy/</guid>
+      <description>&lt;p&gt;Some of my friends ask me to play minecraft with them. “Great!”, I said as minecraft can be running natively in Linux, which is a prerequisite for me  to join.  No Longer before I downloaded it, I encounter a problem, it doesn’t honor system’s proxy setting and will not run unless it can contact its server and Internet on my computer is provided by a socks5 proxy.&lt;/p&gt;
+
+&lt;p&gt;While a VPN can do the work without much exploration, I decided to seek a way to solve this problem in a more elegant way. Since the minecraft multi-user Server is running in Asia, while all my servers are in Europe,  VPN will force all traffic to make their journey from China to Europe and then Singapore. Since the minecraft server we setup can listen on ipv6, and therefore can be connected directly. This will make a lot of unnecessary delay to game.&lt;br /&gt;
+Also, I have a lot of software that is capable of working with socks5 and have been configure to do so. I don’t wants to force these software to be forced to use proxy as they can handle the network more efficiently. And additional configure cost can be prevented.&lt;/p&gt;
+
+&lt;p&gt;The solution should satisfy these requirements:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Enable me to play minecraft&lt;/li&gt;
+&lt;li&gt;Do not interface with my established system and other softwares&lt;/li&gt;
+&lt;li&gt;Minimal burden to system&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;There is a few way to do this:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Running software in an isolated environment where network configure can be done separately&lt;/li&gt;
+&lt;li&gt;Interrupt system call and make a special implementation of network&lt;/li&gt;
+&lt;li&gt;(Modifying the game is not considered)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;With some research, I found these solutions:
+* Running proxychains to hook sockets call
+* Running a VM to support an different network stack
+* Classify and route traffic on system differently&lt;/p&gt;
+
+&lt;p&gt;Since minecraft is written in Java and JVM is just too complex, I don’t know if hook sockets call can actually do the magic. VM have a significant performance penalty, making it impossible to run a 3D game. So I have no choice but to classify traffic.&lt;/p&gt;
+
+&lt;p&gt;I could set the route rule by monitor the game and set rule by IP or other characteris, but it is to complicated and a waste of time. While running in different user might help, non-root user can encounter problem when display content on another user’s desktop and certainly I am not going to run a game in written in Java as root. And, there seems to have no other option.&lt;/p&gt;
+
+&lt;p&gt;However, as the best OS for Power Users and Developers, Linux have never abridged its user’s imagination.  Linux come with a lot of builtin function that can help user in the most direct and fundamental way.&lt;/p&gt;
+
+&lt;p&gt;Cgroup a Linux kernel function that can assign group to process and limit or control them separately. It powered lxc, docker and a lot other softwares and help them to build their isolation.&lt;/p&gt;
+
+&lt;p&gt;This time cgroup come to resort for me.&lt;/p&gt;
+
+&lt;p&gt;To classify network by cgroup, you will need the latest release of &lt;a href=&#34;http://www.netfilter.org/projects/iptables/downloads.html&#34;&gt;iptables&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;To create a cgroup run:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# cgcreate -a $(whoami) -g net_cls:$cgroupname
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Where $cgroupname is your intended name for your cgroup that will use that proxy separately.&lt;/p&gt;
+
+&lt;p&gt;The ‘net_cls’ before colon sign means we wants to classify its traffic.&lt;/p&gt;
+
+&lt;p&gt;And run a shell inside it:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# cgexec  -g net_cls:$cgroupname bash
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And now, the traffic from the the cgroup we just created can be marked(is not mark in iptables!) a class. But we haven&amp;rsquo;t defined what mark we should append to it. So we run:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# cd /sys/fs/cgroup/net_cls/$cgroupname;
+# echo 0x00110011 &amp;gt; net_cls.classid;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And now the traffic is marked.&lt;/p&gt;
+
+&lt;p&gt;To forward traffic to a local transparent proxy run:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# iptables -t nat -N REDSOCKS #(create a new chain)
+# iptables -t nat -A REDSOCKS -d 127.0.0.0/8 -j RETURN #(local traffic will not go through proxy)
+# iptables -t nat -A REDSOCKS -p tcp -j REDIRECT --to-ports 11111 #(forward anything else to local transparent proxy)
+# iptables -t nat -A OUTPUT -p tcp -m cgroup --cgroup 0x00110011 -j REDSOCKS #(if a traffic come from cgroup and marked with 0x00110011 it will be put into the chain was just created)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And finally, run &lt;a href=&#34;https://github.com/darkk/redsocks&#34;&gt;redsocks&lt;/a&gt; to convert transparent proxy to socks5&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;./redsocks -c conf.conf
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With configure:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;base {
+	log_debug =off;
+	log_info = on;
+	log = stderr;
+	daemon = off;
+	redirector = iptables;
+}
+
+redsocks {
+	local_ip = 127.0.0.1;
+	local_port = 11111;
+	ip = 1.2.3.4; /*Your proxy address*/
+	port =12345; /*Your proxy port*/
+	type = socks5;
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;There is also &lt;a href=&#34;http://www.evolware.org/?p=293&#34;&gt;another method&lt;/a&gt; to do this.&lt;/p&gt;
+
+&lt;p&gt;This article is made possible by:
+&lt;a href=&#34;https://wiki.archlinux.org/index.php/cgroups&#34;&gt;https://wiki.archlinux.org/index.php/cgroups&lt;/a&gt;
+&lt;a href=&#34;http://www.evolware.org/?p=369&#34;&gt;http://www.evolware.org/?p=369&lt;/a&gt;
+&lt;a href=&#34;https://github.com/darkk/redsocks/blob/master/README&#34;&gt;https://github.com/darkk/redsocks/blob/master/README&lt;/a&gt;
+&lt;a href=&#34;https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/sec-net_cls.html&#34;&gt;https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/sec-net_cls.html&lt;/a&gt;
+&lt;a href=&#34;http://serverfault.com/questions/560179/route-traffic-from-a-cgroup-via-a-specific-network-interface&#34;&gt;http://serverfault.com/questions/560179/route-traffic-from-a-cgroup-via-a-specific-network-interface&lt;/a&gt;
+&lt;a href=&#34;http://man7.org/linux/man-pages/man8/tc-cgroup.8.html&#34;&gt;http://man7.org/linux/man-pages/man8/tc-cgroup.8.html&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>$I am a pro-encryption</title>
+      <link>https://kkdev.org/post/i-am-a-pro-encryption/</link>
+      <pubDate>Thu, 17 Mar 2016 10:47:00 &#43;0800</pubDate>
+      
+      <guid>https://kkdev.org/post/i-am-a-pro-encryption/</guid>
+      <description>&lt;p&gt;Firstly, happy to see you again.&lt;/p&gt;
+
+&lt;p&gt;For past few months, this blog have been frozen as I was as busy as have little time to doing stuff for myself. As you might have already noticed, from now, this blog will be written in English. This adjustment was due to the variety of font I can choose once I wrote in English.&lt;/p&gt;
+
+&lt;p&gt;In this article, I will talk about the recent debate on encryption and how it related to you.&lt;/p&gt;
+
+&lt;p&gt;Encryption is no more than the transform of data so that it become a form which only selective end will able to understand. There is nothing magic, beyond the surface, encryption itself is no more than  the sequence of basic math operations.&lt;/p&gt;
+
+&lt;p&gt;Long before the modern cryptography emerged, prevent other from reading or inspect communion is a common practice. From masking the actual content inside envelope, to sealing with wax, these kind of practice is widely accepted.&lt;/p&gt;
+
+&lt;p&gt;However, this kind of protection is not as strong as modern cryptography that not only assure trusted messenger cannot silently get a copy of content but also untrusted messenger can be used to transmitting data without risking leaking the data.&lt;/p&gt;
+
+&lt;p&gt;And currently, the messenger we mentioned above can be a network like internet, or a device like a disk or a phone, while our chosen receiver of message can be your friend or yourself at a later time.&lt;/p&gt;
+
+&lt;p&gt;The widely discussed question is that, whether there should be a backdoor for government to read so-called encrypted data.&lt;/p&gt;
+
+&lt;p&gt;From technological view, this should be considered with threat model. Is encryption used to protect us from governmental inspection after they have physically controlled our device.&lt;/p&gt;
+
+&lt;p&gt;Fighting against terrorism is important, but prevent government from becoming an authoritarian government is more important than that.&lt;/p&gt;
+
+&lt;p&gt;Although most of them who support encryption claim that it is just about prevent ‘bad guy’ for getting the content from your phone, like thief, but we ALL know ‘bad guy’ &lt;em&gt;can&lt;/em&gt; be government. People don’t talk about that because they are not willing to publicly argue about that government can be a threat. But obviously that they can be, and in most of area they have already be.&lt;/p&gt;
+
+&lt;p&gt;I live in China, the problem here is not government is so weak, but it is TOO strong. And this can be applied to many country as well.&lt;/p&gt;
+
+&lt;p&gt;On another hand, the terrorists attack other not only because they think others is living differently, but also for the reason that they are living better in a way that they have no hope to pursue.&lt;/p&gt;
+
+&lt;p&gt;So that they are devoted to downgrade others’ living styles, by force others living in fear, and they might have realised the best approach for doing that is not driving a aircraft into a building, but give a reason to government so that they can increase their power and eventually make their country a place everyone have to live in fear.&lt;/p&gt;
+
+&lt;p&gt;Encryption can ensure that the government don’t possess more information than us.  And nowadays, the correct and accurate information is as powerful as weapon.  This will enable us to balance the power with government, so that the government won’t become an authoritarian one, and we don’t have to live in fear.&lt;/p&gt;
+
+&lt;p&gt;Banning effective encryption is said to help fighting against terrorism, but if we allow them to do so, we have resigned in the war against terrorism.&lt;/p&gt;
+
+&lt;p&gt;And luckily, you’ve got a choice(or actually you don’t).&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>$内存其实并不用清理</title>
+      <link>https://kkdev.org/post/no-more-clean-memory/</link>
+      <pubDate>Mon, 31 Aug 2015 09:43:39 &#43;0800</pubDate>
+      
+      <guid>https://kkdev.org/post/no-more-clean-memory/</guid>
+      <description>&lt;p&gt;现在，很多人的电脑上都有一个小泡泡，实时的告诉自己到底还有多少内存。但是你真的了解内存么？&lt;/p&gt;
+
+&lt;p&gt;电脑中有多级存储机制，一般的说，读取的速度越快，存储的容量越小。CPU寄存器和缓存，内存，硬盘，（其实还有），就是电脑的多级存储得成员。其中，内存和之前的存储介质中存储的内容在电脑关闭后会自动消失（可以这样认为），因此我们大部分的数据都保存在硬盘之上。&lt;/p&gt;
+
+&lt;p&gt;但是硬盘的速度并不快，为了保证程序的流畅运行，电脑会将程序在近期需要的数据加载到内存，程序在读取文件内容时可以直接到内存，而不是硬盘读取。因此提高了电脑的运行速度和减少可响应时间。&lt;/p&gt;
+
+&lt;p&gt;内存，只要电脑一启动完毕，就会被系统自动的加载数据，比如程序可能会用到的文件，而程序，也可以向系统申请内存。结果是，在正常运行的现代操作系统上，闲置的内存非常少。&lt;/p&gt;
+
+&lt;p&gt;内存中预加载的文件并不会和程序抢占内存，程序要求内存时，操作系统可以直接将已经预加载文件的内存交给程序，尽管预加载的文件没有用上但是实际上也没有损失。&lt;/p&gt;
+
+&lt;p&gt;因此，内存对于操作系统是一个不用白不用，用了也白用的地方。&lt;/p&gt;
+
+&lt;p&gt;但是，当运行的程序过多时，也会出现内存确实不够用的情况，这时就会将程序的不常用内存放到交换分区（页面文件，虚拟内存）中来防止系统因为内存不足而崩溃。但是因为交换分区在硬盘，访问速度比内存差很多，在可能的情况下，一般不将程序的数据放在硬盘中。&lt;/p&gt;
+
+&lt;p&gt;好，到最后，为什么内存不用清理呢？&lt;/p&gt;
+
+&lt;p&gt;清理内存是先让系统给自己分配很多内存（文件白预加载了），将其他的程序都挤到交换分区（这些程序的运行速度变慢了），之后释放掉自己多请求的内存，让内存闲置下来。&lt;/p&gt;
+
+&lt;p&gt;不久，随着其他程序又运行，毕竟是需要经常访问的内容，程序数据会返回内存，直到下一次内存清理。&lt;/p&gt;
+
+&lt;p&gt;内存这种东西，空着也是空着，不如多用用好。当遇到因为内存不足而导致的电脑速度慢时，应该减少运行的程序或增加内存的大小，而不是使用软件来降低内存利用率。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>#为什么电脑运行的很慢</title>
+      <link>https://kkdev.org/post/why-my-pc-slow/</link>
+      <pubDate>Mon, 31 Aug 2015 07:25:18 &#43;0800</pubDate>
+      
+      <guid>https://kkdev.org/post/why-my-pc-slow/</guid>
+      <description>&lt;p&gt;在这篇文章中我主要想大致的说一下电脑运行慢的原因及相应的对策。&lt;/p&gt;
+
+&lt;p&gt;首先要考虑的问题即是内存是否过小的问题。&lt;/p&gt;
+
+&lt;p&gt;对于内存的大小是否已经对电脑的运行产生影响的最好的判定方法是检查电脑页面错误(page fault)的数量，其中 Major page fault 对电脑性能的影响最为显著。&lt;/p&gt;
+
+&lt;p&gt;Major page fault 在程序访问一块目前不在物理内存上的逻辑内存地址时发生。为了保障系统的稳定运行，现代操作系统在硬盘上划出个区域作为页面文件(交换分区/文件)，当内存不足时，将不活跃的程序的内存中的数据置出至硬盘中的相应区域，将物理內存留给活跃的程序。防止物理内存不足以至必须结束一些程存才能保持运行的情况。当一个程序的内存被置出到硬盘后，这个程存仍有可能运行，这时如果这个程序要访问一块己经置出到硬盘的内存时就会发生Major page fault ,这时这个程序将被内核接管，程序的执行中断，就算时间片还有也必须等待其所要访问的內存完成加载之后才能继续运行。对于这段时间一般不会很长，但是当多次此类行为发生时,就会表现为程序运行不流畅。&lt;/p&gt;
+
+&lt;p&gt;使用ps -aux -o main_flt,maj_flt 查看页面错误情况。&lt;/p&gt;
+
+&lt;p&gt;其次,影响电脑运行速率的因素还有当前CPU，硬盘的负载情况。绝大多数程序都能对于较慢的网络做出应对，但是当其他的处理设备运行较慢时并不能给出合理的提示。&lt;/p&gt;
+
+&lt;p&gt;使用iostat命令查看当前的硬盘使用状态，使用htop监视CPU的使用情况。&lt;/p&gt;
+
+&lt;p&gt;同时，还有一些容易被忽略的因素同样对系统的性能有影响，就是系统中存在的函数钩子。杀毒软件和其他希望控制系统的运行的程序会通过函数钩子完成对系统的控制用来实现一些其他方式无法达到的功能。&lt;/p&gt;
+
+&lt;p&gt;函数钩子即让程序在调用系统调用（也可以是其他程序的函数）之前或之后运行一段代码，并由这段代码决定是否继续这个调用。这个功能被杀毒软件用来阻止病毒，在病毒保证杀毒软件在病毒运行之前有机会阻止其的运行，但是在这个过程中也耗费了时间。通常，这段时间不是很长，但是如果这个功能被滥用，有过多的钩子时，系统的运行速率会显著下降。因此应该只安装一个杀毒软件，不要安装多个。安装多个杀毒软件并不能提高杀毒效果。&lt;/p&gt;
+
+&lt;p&gt;在进行非3D显示时，显示卡性能对电脑的影响并不显著。&lt;/p&gt;
+
+&lt;p&gt;Edit: 在电脑散热出现问题时，CPU和自动降频，这时电脑速度会有显著降低。Thanks for feedback from XiaoLan&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>$Par2文件的故事 和 #如何使用par2工具</title>
+      <link>https://kkdev.org/post/par-why/</link>
+      <pubDate>Sat, 08 Aug 2015 08:31:32 &#43;0800</pubDate>
+      
+      <guid>https://kkdev.org/post/par-why/</guid>
+      <description>&lt;p&gt;Par2文件是用于修复文件中出现的损坏数据的文件类型。&lt;/p&gt;
+
+&lt;p&gt;Par代表 Parity Volume Set Specification。&lt;/p&gt;
+
+&lt;h4&gt;历史&lt;/h4&gt;
+
+&lt;p&gt;在Usernet时代，当时的人会Usernet上分享一些文件，无论是当时的网络还是现在的网络在稳定性上都有极大的问题，因此下载到的别人分享的文件时常会有问题。当时的网络速度很慢，再下载一次的过程很漫长而且相当烦人。当然最烦人的当属上传的时候就有问题，再下载还是错的，只能要求对方再发一次。这个问题困扰了很多人。&lt;/p&gt;
+
+&lt;p&gt;直到Par2文件的出现（之前还有一种Par文件，不过因为时代过于久远，不再介绍）&lt;/p&gt;
+
+&lt;h4&gt;简介&lt;/h4&gt;
+
+&lt;p&gt;Par2通过Reed–Solomon算法，计算出被保护文件的恢复数据。当文件下载完成后，先利用不包含恢复数据的par2文件校验，在校验完成后能够给出需要的恢复文件块数。只要根据需要下载需要的恢复数据即可。&lt;/p&gt;
+
+&lt;p&gt;要是恢复数据也出错了怎么办？不用担心，仅仅是恢复数据有错误的一部分不能用，其他没有错误的部分还能继续用。&lt;/p&gt;
+
+&lt;p&gt;当然，可以任意指定恢复数据的大小和数量（当然是恢复数据越大能恢复的数据越多了）&lt;/p&gt;
+
+&lt;h4&gt;用法（高级）&lt;/h4&gt;
+
+&lt;p&gt;在Linux下，使用par2工具就可以轻而易举的创建par2文件，并利用par2文件和其他恢复数据对文件进行恢复。&lt;/p&gt;
+
+&lt;p&gt;par2 c : 创建par2和修复文件&lt;/p&gt;
+
+&lt;p&gt;par2 v ： 验证文件的完整性&lt;/p&gt;
+
+&lt;p&gt;par2 r ： 利用par2文件和恢复数据对文件进行恢复&lt;/p&gt;
+
+&lt;p&gt;-r 指定恢复数据的最大恢复比例&lt;/p&gt;
+
+&lt;p&gt;还有更多的选项，在安装par2后使用man par2命令查看&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>心灵碎片 0x000000000000000</title>
+      <link>https://kkdev.org/post/chunk-1/</link>
+      <pubDate>Wed, 29 Jul 2015 21:15:51 &#43;0800</pubDate>
+      
+      <guid>https://kkdev.org/post/chunk-1/</guid>
+      <description>&lt;p&gt;心灵碎片是我临时想到，但是却没有机会扩充成长文的只言片语。&lt;/p&gt;
+
+&lt;p&gt;这些心灵碎片记录了当时瞬间的想法，或者长时间的处境。&lt;/p&gt;
+
+&lt;p&gt;也许这些碎片看似毫无逻辑，但是每个都有自己背后的故事。&lt;/p&gt;
+
+&lt;p&gt;下面是些碎片的一部分：&lt;/p&gt;
+
+&lt;p&gt;人在出生时会哭是因为他刚刚发现自己没有羽翼&lt;/p&gt;
+
+&lt;p&gt;珍惜每一次告别，因为，有时一别便是一世。&lt;/p&gt;
+
+&lt;p&gt;我们的的努力到头来都是为了保护自己所喜爱的事物不受到伤害。&lt;/p&gt;
+
+&lt;p&gt;程序员都喜欢自称屌丝，经常抱怨自己的待遇不够好，自由的时间不够多。据说做平面设计的人从来都不会抱怨自己的工作，原因很简单，他们没有时间抱怨。PS：如果你觉得ps很酷的话，快点悔改吧。&lt;/p&gt;
+
+&lt;p&gt;所谓人权天赋，不过是先设后证而已，具体的实现还是要靠自己的。&lt;/p&gt;
+
+&lt;p&gt;创意：科学执政令 为了推行科学执政，某政府下令所有的讨论都必须以科学定理为基础，而凡事有科学定理支持的事物都必须采纳，在命令发布到废除的一天里发生了许多的笑话。&lt;/p&gt;
+
+&lt;p&gt;我早已知道，这个世界上并没有真正可以称为永恒的事物。我们不过是为了满足自己的遐想，假定一个事物没有自己的时限。热力学第二定律告诉我们，这个世界上的一切都将归于混沌，因此，我们要做的并不是留下丰功伟业，而是带走自己在这个世界的体验。&lt;/p&gt;
+
+&lt;p&gt;有一次去吃麦当劳，服务员问我要不要玩具，我说不要，我补上一句，我已经长大了。服务员：有很多大人也要。我笑而不语。&lt;/p&gt;
+
+&lt;p&gt;小学时，我的老师经常说我偏激，总是关注生活的阴暗面。有一天，一个同学从作业本上撕下一张纸，在上面点上一个黑点，问我看到了什么。我的回答：很多的平行直线段。&lt;/p&gt;
+
+&lt;p&gt;有时，一个回眸成为永远的回忆。&lt;/p&gt;
+
+&lt;p&gt;童话与现实的区别就在于童话在恰到好处的地方画上句号。&lt;/p&gt;
+
+&lt;p&gt;本人的绝技：将简单的事情变复杂 （整理的时候加一句，能够拖延是为了延长和那个人的接触时间，我是可以把问题变得十分简单的）&lt;/p&gt;
+
+&lt;p&gt;法律本身并不代表公平和正义。就像冰块不会比制作它的水干净一样，法律不会比制定它的过程更加公平，也不会比它的执行者更正义。&lt;/p&gt;
+
+&lt;p&gt;（造化弄人）冥冥中，有一种自己是上苍的玩偶的感觉&lt;/p&gt;
+
+&lt;p&gt;软件开发中的问题主要出在了，你想象的&amp;rdquo;应该&amp;rdquo;和实际上的&amp;rdquo;其实&amp;rdquo;不同&lt;/p&gt;
+
+&lt;p&gt;突然就觉得有些事情还是越远越好。&lt;/p&gt;
+
+&lt;p&gt;因为到最后你需要做出这样的选择。&lt;/p&gt;
+
+&lt;p&gt;伤心无改世，静思还向前&lt;/p&gt;
+
+&lt;p&gt;每人都有自己的伤心事&lt;/p&gt;
+
+&lt;p&gt;在讲完任何权威试图审查内容都会得到相反的后果的文章后，我的英语老师告诉我们不要像文章中那样做。&lt;/p&gt;
+
+&lt;p&gt;我这个人控制欲特别强什么都想掌握，有一次买了一堆不透明的笔芯，看不到还有多少墨水，特别难受，于是就又买了一支激光笔，通过往里面照了解还剩多少墨水，yyyyyyyyy。&lt;/p&gt;
+
+&lt;p&gt;我逃避开始因为每一个开始都意味着结束。我害怕结束，就像害怕开始一样。&lt;/p&gt;
+
+&lt;p&gt;我经常会遇到觉得题出错的时候,当然,统计信息显示,这个时候是我算错了&amp;hellip;&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;我们是宇宙的火焰&lt;/p&gt;
+
+&lt;p&gt;海棠花开&lt;/p&gt;
+
+&lt;p&gt;如果你想选择选择电脑系专业。有些大企业的价值观和互联网的主流不符，在选择时需额外注意。&lt;/p&gt;
+
+&lt;p&gt;不要去追逐黄昏，在你回眸的一刻，我将老去。（整理的时候加一句，要正确理解，需要考虑加速度导致的广义相对论效应）&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>萌娘百科编辑器辅助工具使用说明</title>
+      <link>https://kkdev.org/post/user_script_howto/</link>
+      <pubDate>Mon, 27 Jul 2015 11:33:37 &#43;0800</pubDate>
+      
+      <guid>https://kkdev.org/post/user_script_howto/</guid>
+      <description>&lt;h2&gt;安装&lt;/h2&gt;
+
+&lt;h3&gt;Chrome浏览器&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;安装 &lt;a href=&#34;https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en-US&#34;&gt;Tampermonkey&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/xiaokangwang/KK5iMengbaiwikiutl/raw/master/Moegirl%20edit%20utl.user.js&#34;&gt;点击这里&lt;/a&gt; (请确认！)&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;确认 &lt;img src=&#34;https://lnk.kkdev.org/1IA1Y3c&#34; alt=&#34;img&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3&gt;Firefox浏览器&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;安装 &lt;a href=&#34;https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/&#34;&gt;Greasemonkey&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/xiaokangwang/KK5iMengbaiwikiutl/raw/master/Moegirl%20edit%20utl.user.js&#34;&gt;点击这里&lt;/a&gt; (请确认！)&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;确认安装&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://lnk.kkdev.org/1Ipi3qm&#34; alt=&#34;img&#34; /&gt;&lt;/p&gt;
+
+&lt;h2&gt;功能&lt;/h2&gt;
+
+&lt;p&gt;目前唯一的功能是将编辑中的百科内容存储在电脑上一份，当编辑页面被意外关闭时，这个功能可以帮助您恢复之前的工作。&lt;/p&gt;
+
+&lt;p&gt;在界面上显示“修改正在被跟踪”时，您的编辑将被同步保存到浏览器中。
+&lt;img src=&#34;https://lnk.kkdev.org/1D10CMA&#34; alt=&#34;img&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在界面上显示“有可以恢复的编辑”时，代表有可以恢复的版本，（但是这个可能已经被保存到萌百了），&lt;/p&gt;
+
+&lt;p&gt;如果想恢复之前的版本，请点恢复，如果编辑已经被保存到萌百，可以点放弃,以放弃之前的编辑。&lt;/p&gt;
+
+&lt;p&gt;此时编辑的内容没有被本程序同步保存到浏览器。
+&lt;img src=&#34;https://lnk.kkdev.org/1U1Bjy9&#34; alt=&#34;img&#34; /&gt;&lt;/p&gt;
+
+&lt;style&gt;
+
+a:focus {
+    outline: thin dotted; !important
+    outline-offset: -2px; !important
+}
+a:focus, a:hover {
+    color: #23527C; !important
+    text-decoration: underline; !important
+}
+a {
+    color: #337AB7; !important
+    text-decoration: none; !important
+}
+&lt;/style&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,677 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on KKDEV - Shelikhoo &#39;s Personal Blog</title>
+    <link>https://kkdev.org/post/</link>
+    <description>Recent content in Posts on KKDEV - Shelikhoo &#39;s Personal Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 21 Oct 2018 20:00:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://kkdev.org/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>V2Ray MITM 功能的性能分析</title>
+      <link>https://kkdev.org/post/the-speed-compare-for-v2ray-mitm/</link>
+      <pubDate>Sun, 21 Oct 2018 20:00:00 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/the-speed-compare-for-v2ray-mitm/</guid>
+      <description>前段时间收到了Victoria Raymond的要求，对V2Ray MITM功能的速度情况进行了在自家网络下的测试。这些测试说明了这个功能在特定网络条件下的实际速度，并加入了对于其提速原理的解释。 如果还不了解V2Ray的MITM，请查看我协助Kiri完成的V2Ray MITM配置说明。
+测试内容 首先是测试内容。针对于这个功能的实现原理，本文作者分别进行了对于连接建立速度和HTTP2网页展示速度的测试。
+连接建立速度是指自浏览器开始尝试建立到某个站点首个连接到首个请求结果开始返回的速度。 这个速度主要影响网站首个页面的加载时间。因此，这个时间越长，你就会在输入网站地址之后回车后，或者点开调转至另外一个网站的链接时，面对一个白色的屏幕等待更长的时间。
+而HTTP2网站展示速度测试则反映了对于启用了HTTP2的网站的页面加载速度。 HTTP2是一个比较新的网页内容传输协议，可以想象其会随着时间变得更加流行。其的一大改进就是提升了传输碎片化内容时的速度。由于V2Ray MITM不支持有效兼容HTTP2协议，因此无法利用这一新协议的特性，影响了内容传输的速度。
+至于内容传输速度，由于V2Ray MITM仅减少了TLS加密环节，其对大文件传输速度没有影响，故没有测试。
+测试方法 为了有效测试V2Ray MITM对于性能的提升和影响， 本次测试选用了网络性能很一般的远端服务器以便得出最显著的效果。在测试期间的ping数据和测试结果一通呈现。 服务器配置方法与Kiri的教程中的方法相同。
+连接建立速度测试 首先通过 HEAD https://kkdev.org/cdn-cgi/trace 和 HEAD https://kkdev.org:8443/cdn-cgi/trace 请求来获取其和Cloudflare服务器建立连接并进行HEAD请求的速度。 能够使用这种方法进行测试是因为V2Ray配置文件中的设置会且仅会对443端口的流量进行MITM攻击，而8443是Cloudflare接受的HTTPS端口,可以被正常访问而不会被MITM。通过轮流对这两个地址进行访问，保证了在测试时MITM组和对照组网络环境基本相同。Cloudflare的连接速度很快，可以基本上忽略和其在传输数据时的速度，因此在其上下载短内容的速度和连接建立速度相同。
+HTTP2网站展示速度测试 通过计算在不同代理设置下使用最新版火狐浏览器访问 https://http2.golang.org/gophertiles 的时间来计算加载支持HTTP2的内容时使用的时间。 这个时间通过浏览器 performance.getEntriesByType(&amp;ldquo;navigation&amp;rdquo;)[0].domComplete 的返回值确定。 由于技术限制，无法轮番进行不同配置文件的测试，但是通过在同一天内的较短时间内测试保证测试结果基本反映了在相同网络环境下的网络性能。
+测试结果 连接建立速度测试结果 在测试过程中反映网络质量的ping的结果如下：
+2802 packets transmitted, 2423 received, 13% packet loss, time 2809639ms rtt min/avg/max/mdev = 343.576/352.594/521.293/17.872 ms  The Probability Distribution of Time for First Byte for V2Ray Original Configure and V2Ray MITM Configure</description>
+    </item>
+    
+    <item>
+      <title>#Why we must change the way we express our code</title>
+      <link>https://kkdev.org/post/why-we-must-change-the-way-we-express-our-code/</link>
+      <pubDate>Wed, 05 Sep 2018 17:57:46 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/why-we-must-change-the-way-we-express-our-code/</guid>
+      <description>The CPUs are similar to each other, so similar that a compiler like LLVM can support multiply CPU architecture by translating a internal representation of action directly to native instructions without understanding what the program is actually doing. And they share a similar issue: making compromise for compatibility and a deeper cause: binary code distribution &amp;amp; representation.
+The most powerful advantage of a CPU architecture is its software ecosystem. No matter how powerful a device is, without a variety of available software ready for end user, the system is unsuitable unless it meet a power user.</description>
+    </item>
+    
+    <item>
+      <title>Domain Socket的用途和其对于V2Ray的意义</title>
+      <link>https://kkdev.org/post/what-is-unix-domain-socket/</link>
+      <pubDate>Wed, 25 Jul 2018 03:16:20 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/what-is-unix-domain-socket/</guid>
+      <description>TL;DR Domain socket是一种进程间通信机制，本身并不能跨主机通信，并不能直接用于翻墙，它是一种辅助配置的工具。
+长回答 Unix domain socket 是一种跨进程通信通信协议，主要用于Unix系操作系统下，同一个主机上应用程序之间的通信。在V2Ray中实现了类似于TCP的流式Domain socket协议.
+主要用法和优点 用于代理和其他程序之间的本地环回连接 Domain Socket协议的主要作用是和其他程序交互，这包括nginx等成熟的应用程序，也包括其他用户自己的应用程序。由于Unix domain socket支持基于文件控制访问权限，基于domain socket的协议可以比较有效的控制访问，减少权限控制的难度，减少了网络协议中需要的认证。 这在多用户环境下十分重要，通过Domain socket可以比较有效和方便的减少在同一个主机下，服务被其他用户访问的情况，及由于不正确配置导致本地服务被代理用户访问的情况。 当然，在部分环境下，Domain socket不占用本地端口，不需要生成数据包的特点也会是使用其的优点。
+用于解决不同网络命名空间之间通信的问题 Linux操作系统下进程可以分组件可以处于操作系统中不同的命名空间，使用不同的操作系统环境。由于Unix domain socket是进程间通信方式，和网络并不处于同一个命名空间，因此，可以在使用相同的进程间通信命名空间的同时，使用不同的网络环境。这可以用于将部分程序在不同的网络环境中运行，实现在Linux环境下的分应用代理。
+Domain Socket对于V2Ray的意义 在Unix环境下，一个比较重要的设计哲学就是每个工具做一个事，并将这个事情做好。V2Ray并不完全遵循这个哲学，而这个哲学也不是完全适合于V2Ray。但是，引入Domain sock是将V2Ray和其他程序进行有效结合的重要方法，使V2Ray更容易和其他程序和项目进行整合。</description>
+    </item>
+    
+    <item>
+      <title>#Identify the barrier that reduce the the efficiency of modern computing</title>
+      <link>https://kkdev.org/post/barrier-of-efficiency/</link>
+      <pubDate>Tue, 22 May 2018 08:57:46 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/barrier-of-efficiency/</guid>
+      <description>Modern computing devices are fast, but not as fast as it can be. One of the principle of software programming is abstraction, which make developing software faster and easier than its hardware counterpart, for the price of efficiency if the abstraction is not ideal.
+One of the most inefficient abstraction is sequential execution, which to be fair, cannot blame von-neumann. In the early days of hardware development, there is only so much circuit unit to support one core.</description>
+    </item>
+    
+    <item>
+      <title>关于V2RayNG在Play商店上的开发者帐号变更为其UI部分开发者的声明</title>
+      <link>https://kkdev.org/post/ng-transfer-to-dev-account/</link>
+      <pubDate>Wed, 08 Nov 2017 15:57:43 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/ng-transfer-to-dev-account/</guid>
+      <description>在未来的一段时间内，V2RayNG在Play上的开发者将变为其UI部分开发者所拥有的帐号CaptainIron (Telegram用户名为：d4boy)。
+本次转移的原因在于这位开发者希望在其的App中加入应用内支付，而这需要开发者拥有自己的Play帐号并设置自己的支付方式。 在本次转移完成后，应用的开发者将显示为CaptainIron，而我将不再拥有对其商店描述和上架程序的管理权限。
+由于我已经不再管理此程序的上架信息，请将您在使用这个程序的时候遇到的问题反馈给CaptainIron(Telegram: d4boy)。 同时，由于不再管理此程序上架的程序文件，这个程序的功能和安全性不会拥有来自我的背书和承诺，我也不会为此应用的行为和内容负责。 您在购买或订阅了此App内的服务时发生的交易不直接和我产生关联，您不应该期待来自我的功能和稳定性更新 ，也不应该以在此应用的付款的情况期待来自我的服务和支持。
+此后，V2RayNG的更新将由其的开发者完全控制，而其的开发者应该自行处理来自其用户的相关反馈和支持请求。 这包括Telegram群组和来自其他渠道的和V2RayNG有关的求助和问题解答， 请不要对于和其有关的内容以包括但不限于私聊，@和或其他提及的方式请求和期待我的支持。
+在AGPL协议的许可范围下，其开发者可以继续使用来自我的libv2ray并得到其的功能和稳定性更新。 这意味着V2RayNG将必须继续保持开源，公布源代码并允许来自其他人的修改和分发修改版的程序。
+每个开发者开发程序都需要有自己的动机和动力，有些开发者可能愿意在不接受任何形式的报酬下开发并共享程序， 但是更多的开发者需要金钱的驱动才会持续不断为用户提供高质量的程序。 缺少利益支持的任何活动都不可能长久持续，尤其是极其枯燥且需要特殊的工具和技术才能完成的软件和或硬件开发工作。 希望大家不要对开发者决定加入收费功能的决定做出过多的负面评价，每一个都要为一个原因而努力 ，而金钱则是对于很多人来说最容易接受的原因，也是最容易让他们感到自己工作的意义的方法。 对于他们来说，这是对于他们使用自己的周末和夜晚甚至是午休和 课间在电脑和手机前对着一个枯燥的界面和晦涩难懂的术语挥洒自己的时间的最好的理由 （P.S.:不过V2RayNG开发者貌似是在工作地点摸鱼进行开发， 并没有使用自己的私人时间，可能并不适用上面的描述23333333）。
+Update: 转移已经完成。
+Update: 已经提交了转移申请，可能需要几天的时间才会生效。
+Shelikhoo</description>
+    </item>
+    
+    <item>
+      <title>V2Ray RFC: V2Ray Pipe Transport Proposal</title>
+      <link>https://kkdev.org/post/v2ray-pipe-transport/</link>
+      <pubDate>Sun, 03 Sep 2017 17:58:20 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/v2ray-pipe-transport/</guid>
+      <description>V2Ray is designed to be a flexible network tool for developers. However, in term of developer friendliness it have suffered a bad reputation as being hard to master both for user and third-party developers.
+Here, I would like to propose a new stub transport that is intended to reduce the difficulty for developing a transport for V2Ray, and remove the necessity of commitment for development. Pipe transport use operating system’s fork and/or unix domain socket capability.</description>
+    </item>
+    
+    <item>
+      <title>Designing A QR Code Scheme For V2Ray</title>
+      <link>https://kkdev.org/post/designing-a-qr-code-scheme-for-v2ray/</link>
+      <pubDate>Thu, 31 Aug 2017 22:18:59 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/designing-a-qr-code-scheme-for-v2ray/</guid>
+      <description>Scanning QR code to import configure file from computer have been a wanted feature for a long time, but only until very recently, such a possibility were aroused to implement such a functionality.
+Before LibV2Ray write a universal, future proof, multipart enabled QR code. Multiply attempt by third-party developer was made to create a QR code representation for a configure file. All previous version of QR code solve all problems they face at that time very successfully, but still at the expense of some problem not significant in their eyes.</description>
+    </item>
+    
+    <item>
+      <title>V2RayGO Privacy Policy</title>
+      <link>https://kkdev.org/post/v2raygopp/</link>
+      <pubDate>Fri, 21 Jul 2017 12:49:41 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/v2raygopp/</guid>
+      <description>V2Ray Team, LibV2Ray Team and V2RayGO Team respect your privacy. V2RayGO do not include any tracking library or service from third party purposefully, but could use third party service to improve your experience. V2RayGO might or might not collect your device identification info, hardware and software info, cash info, and network info, but we will request your consent before upload them to our sever. User can refuse to upload any of these information to our server and continue to use the a limited set of function of our software, once you have consent our upload we will keep uploading indefinitely.</description>
+    </item>
+    
+    <item>
+      <title>#Classify and discriminate network traffic to enable partial global proxy in Linux using cgroup,iptables,redsocks</title>
+      <link>https://kkdev.org/post/classify-network-traffic-partial-global-proxy/</link>
+      <pubDate>Sat, 02 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/classify-network-traffic-partial-global-proxy/</guid>
+      <description>Some of my friends ask me to play minecraft with them. “Great!”, I said as minecraft can be running natively in Linux, which is a prerequisite for me to join. No Longer before I downloaded it, I encounter a problem, it doesn’t honor system’s proxy setting and will not run unless it can contact its server and Internet on my computer is provided by a socks5 proxy.
+While a VPN can do the work without much exploration, I decided to seek a way to solve this problem in a more elegant way.</description>
+    </item>
+    
+    <item>
+      <title>$I am a pro-encryption</title>
+      <link>https://kkdev.org/post/i-am-a-pro-encryption/</link>
+      <pubDate>Thu, 17 Mar 2016 10:47:00 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/i-am-a-pro-encryption/</guid>
+      <description>Firstly, happy to see you again.
+For past few months, this blog have been frozen as I was as busy as have little time to doing stuff for myself. As you might have already noticed, from now, this blog will be written in English. This adjustment was due to the variety of font I can choose once I wrote in English.
+In this article, I will talk about the recent debate on encryption and how it related to you.</description>
+    </item>
+    
+    <item>
+      <title>$内存其实并不用清理</title>
+      <link>https://kkdev.org/post/no-more-clean-memory/</link>
+      <pubDate>Mon, 31 Aug 2015 09:43:39 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/no-more-clean-memory/</guid>
+      <description>现在，很多人的电脑上都有一个小泡泡，实时的告诉自己到底还有多少内存。但是你真的了解内存么？
+电脑中有多级存储机制，一般的说，读取的速度越快，存储的容量越小。CPU寄存器和缓存，内存，硬盘，（其实还有），就是电脑的多级存储得成员。其中，内存和之前的存储介质中存储的内容在电脑关闭后会自动消失（可以这样认为），因此我们大部分的数据都保存在硬盘之上。
+但是硬盘的速度并不快，为了保证程序的流畅运行，电脑会将程序在近期需要的数据加载到内存，程序在读取文件内容时可以直接到内存，而不是硬盘读取。因此提高了电脑的运行速度和减少可响应时间。
+内存，只要电脑一启动完毕，就会被系统自动的加载数据，比如程序可能会用到的文件，而程序，也可以向系统申请内存。结果是，在正常运行的现代操作系统上，闲置的内存非常少。
+内存中预加载的文件并不会和程序抢占内存，程序要求内存时，操作系统可以直接将已经预加载文件的内存交给程序，尽管预加载的文件没有用上但是实际上也没有损失。
+因此，内存对于操作系统是一个不用白不用，用了也白用的地方。
+但是，当运行的程序过多时，也会出现内存确实不够用的情况，这时就会将程序的不常用内存放到交换分区（页面文件，虚拟内存）中来防止系统因为内存不足而崩溃。但是因为交换分区在硬盘，访问速度比内存差很多，在可能的情况下，一般不将程序的数据放在硬盘中。
+好，到最后，为什么内存不用清理呢？
+清理内存是先让系统给自己分配很多内存（文件白预加载了），将其他的程序都挤到交换分区（这些程序的运行速度变慢了），之后释放掉自己多请求的内存，让内存闲置下来。
+不久，随着其他程序又运行，毕竟是需要经常访问的内容，程序数据会返回内存，直到下一次内存清理。
+内存这种东西，空着也是空着，不如多用用好。当遇到因为内存不足而导致的电脑速度慢时，应该减少运行的程序或增加内存的大小，而不是使用软件来降低内存利用率。</description>
+    </item>
+    
+    <item>
+      <title>#为什么电脑运行的很慢</title>
+      <link>https://kkdev.org/post/why-my-pc-slow/</link>
+      <pubDate>Mon, 31 Aug 2015 07:25:18 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/why-my-pc-slow/</guid>
+      <description>在这篇文章中我主要想大致的说一下电脑运行慢的原因及相应的对策。
+首先要考虑的问题即是内存是否过小的问题。
+对于内存的大小是否已经对电脑的运行产生影响的最好的判定方法是检查电脑页面错误(page fault)的数量，其中 Major page fault 对电脑性能的影响最为显著。
+Major page fault 在程序访问一块目前不在物理内存上的逻辑内存地址时发生。为了保障系统的稳定运行，现代操作系统在硬盘上划出个区域作为页面文件(交换分区/文件)，当内存不足时，将不活跃的程序的内存中的数据置出至硬盘中的相应区域，将物理內存留给活跃的程序。防止物理内存不足以至必须结束一些程存才能保持运行的情况。当一个程序的内存被置出到硬盘后，这个程存仍有可能运行，这时如果这个程序要访问一块己经置出到硬盘的内存时就会发生Major page fault ,这时这个程序将被内核接管，程序的执行中断，就算时间片还有也必须等待其所要访问的內存完成加载之后才能继续运行。对于这段时间一般不会很长，但是当多次此类行为发生时,就会表现为程序运行不流畅。
+使用ps -aux -o main_flt,maj_flt 查看页面错误情况。
+其次,影响电脑运行速率的因素还有当前CPU，硬盘的负载情况。绝大多数程序都能对于较慢的网络做出应对，但是当其他的处理设备运行较慢时并不能给出合理的提示。
+使用iostat命令查看当前的硬盘使用状态，使用htop监视CPU的使用情况。
+同时，还有一些容易被忽略的因素同样对系统的性能有影响，就是系统中存在的函数钩子。杀毒软件和其他希望控制系统的运行的程序会通过函数钩子完成对系统的控制用来实现一些其他方式无法达到的功能。
+函数钩子即让程序在调用系统调用（也可以是其他程序的函数）之前或之后运行一段代码，并由这段代码决定是否继续这个调用。这个功能被杀毒软件用来阻止病毒，在病毒保证杀毒软件在病毒运行之前有机会阻止其的运行，但是在这个过程中也耗费了时间。通常，这段时间不是很长，但是如果这个功能被滥用，有过多的钩子时，系统的运行速率会显著下降。因此应该只安装一个杀毒软件，不要安装多个。安装多个杀毒软件并不能提高杀毒效果。
+在进行非3D显示时，显示卡性能对电脑的影响并不显著。
+Edit: 在电脑散热出现问题时，CPU和自动降频，这时电脑速度会有显著降低。Thanks for feedback from XiaoLan</description>
+    </item>
+    
+    <item>
+      <title>$Par2文件的故事 和 #如何使用par2工具</title>
+      <link>https://kkdev.org/post/par-why/</link>
+      <pubDate>Sat, 08 Aug 2015 08:31:32 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/par-why/</guid>
+      <description>Par2文件是用于修复文件中出现的损坏数据的文件类型。
+Par代表 Parity Volume Set Specification。
+历史 在Usernet时代，当时的人会Usernet上分享一些文件，无论是当时的网络还是现在的网络在稳定性上都有极大的问题，因此下载到的别人分享的文件时常会有问题。当时的网络速度很慢，再下载一次的过程很漫长而且相当烦人。当然最烦人的当属上传的时候就有问题，再下载还是错的，只能要求对方再发一次。这个问题困扰了很多人。
+直到Par2文件的出现（之前还有一种Par文件，不过因为时代过于久远，不再介绍）
+简介 Par2通过Reed–Solomon算法，计算出被保护文件的恢复数据。当文件下载完成后，先利用不包含恢复数据的par2文件校验，在校验完成后能够给出需要的恢复文件块数。只要根据需要下载需要的恢复数据即可。
+要是恢复数据也出错了怎么办？不用担心，仅仅是恢复数据有错误的一部分不能用，其他没有错误的部分还能继续用。
+当然，可以任意指定恢复数据的大小和数量（当然是恢复数据越大能恢复的数据越多了）
+用法（高级） 在Linux下，使用par2工具就可以轻而易举的创建par2文件，并利用par2文件和其他恢复数据对文件进行恢复。
+par2 c : 创建par2和修复文件
+par2 v ： 验证文件的完整性
+par2 r ： 利用par2文件和恢复数据对文件进行恢复
+-r 指定恢复数据的最大恢复比例
+还有更多的选项，在安装par2后使用man par2命令查看</description>
+    </item>
+    
+    <item>
+      <title>心灵碎片 0x000000000000000</title>
+      <link>https://kkdev.org/post/chunk-1/</link>
+      <pubDate>Wed, 29 Jul 2015 21:15:51 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/chunk-1/</guid>
+      <description>心灵碎片是我临时想到，但是却没有机会扩充成长文的只言片语。
+这些心灵碎片记录了当时瞬间的想法，或者长时间的处境。
+也许这些碎片看似毫无逻辑，但是每个都有自己背后的故事。
+下面是些碎片的一部分：
+人在出生时会哭是因为他刚刚发现自己没有羽翼
+珍惜每一次告别，因为，有时一别便是一世。
+我们的的努力到头来都是为了保护自己所喜爱的事物不受到伤害。
+程序员都喜欢自称屌丝，经常抱怨自己的待遇不够好，自由的时间不够多。据说做平面设计的人从来都不会抱怨自己的工作，原因很简单，他们没有时间抱怨。PS：如果你觉得ps很酷的话，快点悔改吧。
+所谓人权天赋，不过是先设后证而已，具体的实现还是要靠自己的。
+创意：科学执政令 为了推行科学执政，某政府下令所有的讨论都必须以科学定理为基础，而凡事有科学定理支持的事物都必须采纳，在命令发布到废除的一天里发生了许多的笑话。
+我早已知道，这个世界上并没有真正可以称为永恒的事物。我们不过是为了满足自己的遐想，假定一个事物没有自己的时限。热力学第二定律告诉我们，这个世界上的一切都将归于混沌，因此，我们要做的并不是留下丰功伟业，而是带走自己在这个世界的体验。
+有一次去吃麦当劳，服务员问我要不要玩具，我说不要，我补上一句，我已经长大了。服务员：有很多大人也要。我笑而不语。
+小学时，我的老师经常说我偏激，总是关注生活的阴暗面。有一天，一个同学从作业本上撕下一张纸，在上面点上一个黑点，问我看到了什么。我的回答：很多的平行直线段。
+有时，一个回眸成为永远的回忆。
+童话与现实的区别就在于童话在恰到好处的地方画上句号。
+本人的绝技：将简单的事情变复杂 （整理的时候加一句，能够拖延是为了延长和那个人的接触时间，我是可以把问题变得十分简单的）
+法律本身并不代表公平和正义。就像冰块不会比制作它的水干净一样，法律不会比制定它的过程更加公平，也不会比它的执行者更正义。
+（造化弄人）冥冥中，有一种自己是上苍的玩偶的感觉
+软件开发中的问题主要出在了，你想象的&amp;rdquo;应该&amp;rdquo;和实际上的&amp;rdquo;其实&amp;rdquo;不同
+突然就觉得有些事情还是越远越好。
+因为到最后你需要做出这样的选择。
+伤心无改世，静思还向前
+每人都有自己的伤心事
+在讲完任何权威试图审查内容都会得到相反的后果的文章后，我的英语老师告诉我们不要像文章中那样做。
+我这个人控制欲特别强什么都想掌握，有一次买了一堆不透明的笔芯，看不到还有多少墨水，特别难受，于是就又买了一支激光笔，通过往里面照了解还剩多少墨水，yyyyyyyyy。
+我逃避开始因为每一个开始都意味着结束。我害怕结束，就像害怕开始一样。
+我经常会遇到觉得题出错的时候,当然,统计信息显示,这个时候是我算错了&amp;hellip;&amp;hellip;
+我们是宇宙的火焰
+海棠花开
+如果你想选择选择电脑系专业。有些大企业的价值观和互联网的主流不符，在选择时需额外注意。
+不要去追逐黄昏，在你回眸的一刻，我将老去。（整理的时候加一句，要正确理解，需要考虑加速度导致的广义相对论效应）</description>
+    </item>
+    
+    <item>
+      <title>萌娘百科编辑器辅助工具使用说明</title>
+      <link>https://kkdev.org/post/user_script_howto/</link>
+      <pubDate>Mon, 27 Jul 2015 11:33:37 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/user_script_howto/</guid>
+      <description>安装 Chrome浏览器  安装 Tampermonkey
+ 点击这里 (请确认！)
+ 确认   Firefox浏览器  安装 Greasemonkey
+ 点击这里 (请确认！)
+  确认安装
+功能 目前唯一的功能是将编辑中的百科内容存储在电脑上一份，当编辑页面被意外关闭时，这个功能可以帮助您恢复之前的工作。
+在界面上显示“修改正在被跟踪”时，您的编辑将被同步保存到浏览器中。 在界面上显示“有可以恢复的编辑”时，代表有可以恢复的版本，（但是这个可能已经被保存到萌百了），
+如果想恢复之前的版本，请点恢复，如果编辑已经被保存到萌百，可以点放弃,以放弃之前的编辑。
+此时编辑的内容没有被本程序同步保存到浏览器。  a:focus { outline: thin dotted; !important outline-offset: -2px; !important } a:focus, a:hover { color: #23527C; !important text-decoration: underline; !important } a { color: #337AB7; !important text-decoration: none; !important }  </description>
+    </item>
+    
+    <item>
+      <title>关于乖离性ma爆吧事件的一些看法</title>
+      <link>https://kkdev.org/post/bust-ba-game/</link>
+      <pubDate>Wed, 22 Jul 2015 06:44:41 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/bust-ba-game/</guid>
+      <description>a:focus { outline: thin dotted; !important outline-offset: -2px; !important } a:focus, a:hover { color: #23527C; !important text-decoration: underline; !important } a { color: #337AB7; !important text-decoration: none; !important }  乖离性ma原来的吧主吃完火锅后回来就发现自己不是吧主了，而空降吧主的行为导致贴吧内的成员愤怒，通过发布违规文件的链接来表示对于现任吧主和百度的反对和抗议。
+###在事件发生时各方的行动###
+原吧主(未确认) 陈述 自己的遭遇，同时各路人士 继续 发布 违反 规则 的内容 而且发的不亦乐乎，同时还有 有列举法律怕查水表的，分析 情况的，编故事骂新吧主的，表示建立国服的网易经常空降吧主的。(如果不能访问，请科学上网)
+在发生这种事情后，现任吧主没有任何澄清事实的尝试。
+还忙着删掉原吧主（未确认）的帖子（在删掉违规帖子之前）。
+下面上图
+冒充吧主说封锁冒充吧主的帐号的
+满屏幕的链接
+网友表示对于百度，网易的愤怒
+和无奈
+图贴的已经够多的了，想必大家已经对这个事件有了一定的了解，那么这个事件告诉了我们什么呢？
+##这个事件给我们的启示##
+ 是关于平台的运营的，平台应该是平的，不应该在运营当中加入自己的利益因素，更不能因为利益而作出损害平台的内容的贡献者的行为。在这次事件中，百度被认为直接指派吧主，没有遵循前任吧主和吧内成员的意愿，直接导致了此次事件。
+ 平台应该有自己的处理和反馈机制，在此次事件发生后，贴吧完全处于混乱状态。因为贴吧内的成员无法表达自己支持原吧主的诉求，导致通过发布违规信息来得到注意。但是封原吧主的帐号到还是挺快的（未验证）。
+ 整个贴吧的管理的流程缺乏透明度，百度没有对于吧主的增加或减少的原因做任何说明，导致对于百度的不信任。
+ 最后是关于所谓国服的，东西还是原版的好，觉得国服并不受日服玩家待见。
+  ##给事件的参与者的建议##
+像reddit这样，相对于百度运营更良心的平台有的是，别在百度浪费时间了，隔壁的贴吧不是还是人家的地盘么？</description>
+    </item>
+    
+    <item>
+      <title>#已经部署Piwik</title>
+      <link>https://kkdev.org/post/piwik-new/</link>
+      <pubDate>Thu, 25 Jun 2015 17:41:32 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/piwik-new/</guid>
+      <description>前几天吐槽托管，现在我已经将我的piwik统计移出原来的托管商。
+这里我要推荐一下OpenShift这个托管平台，免费，且功能齐全，无讨厌限制。
+（尽管并没有其他的托管那么易用）但是，功能全面，限制少，还给shell。
+顺便提一下，我遇到一个问题就是似乎.tar.gz的文件不能as is的下载。
+原文件开头：
+0000000 8b1f 0008 ba1b 558b 0300 3dec 7369 38db 0000010 fd96 bf59 d302 aae9 52b6 7516 caf8 aab8 0000020 cb67 9c49 53c4 e276 9d8d 6cce a7a5 884c 0000030 2484 29b4 4392 b690 5b35 bfbb df7d 9001  以tar.gz为后缀
+0000000 8b1f 0008 0000 0000 0300 4900 b680 1f7f 0000010 088b 1b00 8bba 0055 ec03 693d db73 9638 0000020 59fd 02bf e9d3 b6aa 1652 f875 b8ca 67aa 0000030 49cb c49c 7653 8de2 ce9d a56c 4ca7 8488  解决方法：</description>
+    </item>
+    
+    <item>
+      <title>网站进行了大规模迁移</title>
+      <link>https://kkdev.org/post/switch-to-new-droplet/</link>
+      <pubDate>Mon, 22 Jun 2015 14:25:56 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/switch-to-new-droplet/</guid>
+      <description>在之前的一年中，我的VPS一直或多或少的有积累性问题，而很多站点也已经崩溃。
+在选择新的VPS的地点时，我发现DO的SFO区域的ping比法国的要地，不过丢包问题暂时没有进行具体的测量。
+顺便提一句，zend真心不能忍，动不动就CPU超限。连一个页面都加载不全。。。。。</description>
+    </item>
+    
+    <item>
+      <title>我就是我?</title>
+      <link>https://kkdev.org/post/amime/</link>
+      <pubDate>Fri, 19 Jun 2015 20:35:32 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/amime/</guid>
+      <description>这篇文章中，我将谈论有关数字身份的相关问题，并介绍我个人承认的识别识别我的方法，防止不法分子和合法部门对于伪造我的言论。
+目前，伪造身份的事情还不常发生，但是确实不是没有，我个人也对于自己的数字身份十分紧张，生怕那天别人冒充我去用我的身份给别人发消息，给自己和别人造成麻烦（当然，你不用担心，鉴于实际上没有什么人会真的理我，实际上不是什么大问题）。
+应该如何确定和自己聊天的那个人的确就是我呢，一般人都会通过看聊天软件，邮件收件箱上的提示，可是这并不是实际上有效的做法，因为本来这些邮箱和聊天软件的认证系统就有他们自身的缺陷，而显示的内容也在很大程度上取决于聊天软件和邮件的提供商，这些人或者企业或多或少的可以决定你最终看到的内容，尽管一般的说，这些提示或多或少的能反映对方的身份，但是并不能真正的保护个人的身份不会被冒名顶替。
+这是，就需要密码学出场了，像DSA,RSA(用于电子签名)，ECDSA，EdDSA都是用于数字签名的密码学算法，综合起来，它们的共性在于通过一系列运算，可以生成一个只有密钥的持有者可以生成的数字，而其他的人则可以通过由这个密钥派生出的公钥来验证。而这个生成的数字就叫做密码学数字签名，破解它的难度在于数学计算的难度，其的安全性本身并不依赖于人。
+当下，很多程序都内置了加密系统，但是就像 这个文章 中提到的，加密系统的安全性主要决定于谁持有加密密钥，仅仅加密还不够，还要自己持有密钥。因为在大多数系统中，密钥的持有者并不是和你进行聊天的人，而是服务器的运营者，因此尽管其采用了加密，但是保证的只是你和运营商（服务的提供商）之间通信的安全，但是并不能保证你和对方的通信安全。
+然而，一些程序却很好的解决了这个问题，比如GnuPG。通过密码学手段，GnuPG以一种并不令人生畏的方式解决了这些问题。
+因为签名和签名的验证完全在客户端进行，服务器并不掌握用户的密钥，也因此不能冒名顶替用户。在签名的同时，还可以进行加密，因此不仅不能伪造消息连消息的内容都看不到了。
+顺便提一句，为什么一开始设计的时候不设计成这样呢？最开始的时候，计算机的运算性能有限，加密实际上会消耗更多的计算资源，而且当时的电脑大多用来处理商业数据，如果说老板知道员工的工作通信还情有可原的话，目前的服务提供商知道用户的数据就是完全没有理由的了。
+实际上，因为很多数据根本就没有加密，得到通信的内容实际上并不比运行一个软件困难。
+P.S.:尽管很多国产网盘声称用户的数据是加密的，我还没有见到一个国产网盘把加密密钥完全交给用户的。
+P.P.S:如何确定是否是真的用户控制密钥呢？如果仅仅向邮箱发封邮件，向手机发个短信就能重置密码，而且网盘内容一个不少的话，绝对密钥不是自己控制的。
+最后，给出我的GPG密钥：
+pub 4096R/709ABD21 2014-03-09 [expires: 2019-03-23]
+Key fingerprint = 0602 B44C 2B5A 8176 62B6 23EA 7791 BDB0 709A BD21
+uid [ultimate] XiaokangWang xiaokangwang@outlook.com
+sub 4096R/72D12ABB 2015-01-24 [expires: 2017-01-25]
+sub 4096R/929349B7 2015-06-02 [expires: 2019-06-02]</description>
+    </item>
+    
+    <item>
+      <title>黄昏</title>
+      <link>https://kkdev.org/post/dusk/</link>
+      <pubDate>Sat, 30 May 2015 16:17:39 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/dusk/</guid>
+      <description>没什么可写的, 直接给hash
+28a932064659c5d656427e8be4a0eadd31671ef74a8aadf729aa3cd3021b331ab4e7c950efe16ad2beb6545a3f69a69ed79d84fd8987fd5cfc7df2a68b85a680
+快高考了,祝愿一下自己吧.</description>
+    </item>
+    
+    <item>
+      <title>平行世界意味着什么</title>
+      <link>https://kkdev.org/post/parallel_universe/</link>
+      <pubDate>Fri, 01 May 2015 15:24:09 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/parallel_universe/</guid>
+      <description>我曾经和他人谈论过有关平行宇宙的问题，而现在，我想再关于这个问题发表一下我的畅想。
+我没有对文章中提到的科学概念和理论进行核实，这篇文章不是科普文章。
+首先，为什么会有平行宇宙呢，目前大概有两种可能的解释。
+第一个解释，是我们的宇宙非常非常的大，因为光到达我们这里需要时间，因此在我们能看到的世界之外很有可能还有更广阔的天地。我们能够看到的区域叫可观测宇宙，在其外，就是未知的宇宙。随着时间的推移,我们能够不断的观测到进入我们可观测区域的新的星系,因此有一些人认为这个宇宙是无穷无尽的. 如果一切的物质都能够被量化,那么物质的形态的可能就是有限的,物质的所有可能也就是有限的.由物质组成的空间的可能也就是有限的.因为宇宙的大小是无限的,因此,在无限的宇宙处以有限的可能的数量,因此,会有无数个相同的可观测宇宙.它们之间因为过于遥远而互相没有关联.因为事件的推演,可能性增加,因此有些平时世界会原先相同,在一刻之后不同,并一次走向不同的未来.
+第二个解释,是关于量子物理波函数的真随机坍缩.在哥本哈根解释中,当一个波函数因为被观测而坍缩时,会根据概率,在多个可能中随机选择一个.很重要的一个问题是,如果我们只能看到波函数坍缩的一个结果,我们很疑惑有没有可能我们会看到另一个结果.因此就有了著名的思想实验薛定鄂猫,我们只能看到一只活猫或者一只死猫,但是,在没有被观测之前,一个波函数的观测结果同时处于所有可能.因为不满足这个世界需要有人(智慧生物)的观测才能运行的解释,科学家脑洞了多世界解释(Many-worlds interpretation),既所有的可能同时发生,只不过在不同的世界而已.每一个世界都有自己的观测结果,在观测的一刻分道扬镳,奔向不同的未来.
+那么平行宇宙和我们之间有什么关系呢?
+tl;dr: 没有什么关系
+根据目前的科技水平,无论是将人活着送到可观测宇宙之外,还是和分道扬镳的其他的平行宇宙进行交涉都不太可能.目前人造物品的最远航行距离也就到达太阳系的边上, 距离我们 1.62×10^10 km(0.017光年),而可观测宇宙的大小大概是宇宙的年龄*光速(不准确,因为一些原因,实际上是930亿光年,复杂了&amp;hellip;.脑洞文不讨论 详情 ) .因此要想走到宇宙的边缘去寻找自己的另一个可能是很难的.对于另一种解释,目前人类文明还没有公开发表的对于量子机制更深层的解释.尚不了解量子机制的底层原理,也就意味者我们不能超越量子机制,去和因为量子机制而分歧的平行宇宙有任何交互.当然,发现比量子机制更底层的机制的难度是非常巨大的.(要是发现了的什么量子密钥分发都弱爆了&amp;hellip;..)
+因此,即使平行世界真的存在,根据当代的科技水平(在我写这篇文章时的科技水平)应该是很难和平行世界有任何的交互了,但是,
+为什么还有有很多人一次一次的提到平行世界这个概念呢?
+原因之一是因为这个世界有太多的不完美,我们的很多选择,他人的很多选择对于我们来说都不是最优解,甚至是残酷的.因此,我们很自然的希望,存在着一个世界,有一个自己,在享受者不同的生活.
+平行世界中,总会有一个自己事事顺心,逃过了生活的种种不完美.
+这个世界,还没有人发明出时光机,平行时空中的约定也不知道到底兑现了没有,也许,平行世界给我们的也只能是心理上的一点点宽慰而已.
+其实有的时候,我们在想到这个有一个自己在平行世界中会过得比自己的好的同时也应该知道,自己应该努力,让自己所在的世界向自己所期望的方向发展,因为如果我们只是羡慕了在平行世界的自己,自己永远也不会有被其他平行世界的自己羡慕的资本.
+也许,有一个平行世界,人们发现了和其他平行世界交互的方法,在那里,我在写一篇如何正确的在平行世界间穿梭的文章.
+(经过计算,我现在所在的世界和我一直羡慕的我自己的世界之间的距离太远了,连羡慕都羡慕不过来了&amp;hellip;&amp;hellip;平行好几回都到不了&amp;hellip;..)</description>
+    </item>
+    
+    <item>
+      <title>已经将博客迁移到hugo引擎</title>
+      <link>https://kkdev.org/post/switch/</link>
+      <pubDate>Fri, 01 May 2015 10:12:29 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/switch/</guid>
+      <description>在过去的几个小时,我将我的这个博客的生成工具转换为了hugo.
+相对于之前的jekyll,这个新的引擎可以比之前更快的生成页面.
+同时,因为采用了更加简单的语法,我将可以更容易的进行定制.
+从现在开始,这个博客将不再依赖于github的自动构建, 而是依赖于wercker的自动构建工具.
+折腾这个工具稍微花了点时间,
+但总体上还是值得的.
+可能会在下一个假期开发一个评论功能.
+在评论框这方面,有很多已有的网站,但是我有点信不过,自己做的东西还是会更加容易控制一些吧.
+话说wercker的坑真多呀&amp;hellip;&amp;hellip;.
+如果的一个定义的变量是private的,就会遇到各种各种问题&amp;hellip;&amp;hellip;&amp;hellip;.</description>
+    </item>
+    
+    <item>
+      <title>你们错了,这是保护你的邮箱的真正方法</title>
+      <link>https://kkdev.org/post/2015-03-15-you-wrong-this-is-the-actually-way-to-protect-you/</link>
+      <pubDate>Sun, 15 Mar 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2015-03-15-you-wrong-this-is-the-actually-way-to-protect-you/</guid>
+      <description>我真是呵呵了,315晚会还有脸说邮箱的密码能被盗,这实在不是问题的关键.
+目前中国的许多网站都不支持https,完全处于可以随时可以被监听的状态.
+某&amp;rdquo;专家&amp;rdquo;给出的方法是使用4G网络,有密码的WiFi,这也叫专家?????????
+4G网络并不比WiFi安全多少,虽然是由运营商控制的,但是在运营商端可可以进行监听.
+至于有密码,有加密,我的态度一直是加密本身并不是安全的保证,因为安全性的最弱的一环往往在密钥的管理上(对于rc4等有缺陷的加密机制我就不吐槽了).
+如果密码本身不安全,那么什么都是没用用的,一个WiFi网络的安全性不高于其密码的安全性.
+要是你能免费蹭的话,那么基本上就是不安全的.
+那么如何保护自己呢,我的建议之一是使用基于TLS的加密,在用户和服务器之间建立加密的连接,
+一般只要是支持https的网站而且在访问时没有浏览器的警告,在传输层面上是安全的.
+当然,至于你在网站上的东西安全问题,还和网站的运营商有关,目前中国的网站一般不可靠.
+我认为最有效的方法,就是使用GPG对于邮件的内容进行加密,
+由于加密是端对端的,即使服务的提供商也无法得到邮件的内容.
+(信件的标题,发件人,收件人,发信时间,邮件内容是不加密的,同时也不能隐藏邮件是加密的本身)
+只有大家都使用端对端加密,才能真正的保护自己的隐私.
+至于315晚会就当个娱乐节目吧&amp;hellip;&amp;hellip;.
+我觉得其的娱乐性确实不错,在这点上值得肯定.</description>
+    </item>
+    
+    <item>
+      <title>Copyright registered at SafeCreative</title>
+      <link>https://kkdev.org/post/2015-02-22-copyright-registered-at-safecreative/</link>
+      <pubDate>Sun, 22 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2015-02-22-copyright-registered-at-safecreative/</guid>
+      <description>Registered on Safe Creative</description>
+    </item>
+    
+    <item>
+      <title>Crowd Process</title>
+      <link>https://kkdev.org/post/2015-02-07-crowdprocess/</link>
+      <pubDate>Sat, 07 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2015-02-07-crowdprocess/</guid>
+      <description>您只有在保持本页打开的情况下才加入Crowd Process
+(function(){var d=document;d.addEventListener(&#34;DOMContentLoaded&#34;,function(){var a=d.createElement(&#34;iframe&#34;);a.src=&#34;https://ss.crowdprocess.com/#?providerId=bb8faf3d-62d7-4f70-9956-f97fc5735ce3&#34;;a.sandbox=&#34;allow-scripts allow-same-origin&#34;;a.style.display=&#34;none&#34;;d.body.appendChild(a)})})() </description>
+    </item>
+    
+    <item>
+      <title>$Why Bitcoin didn&#39;t become the next-gen currency</title>
+      <link>https://kkdev.org/post/2015-01-20-why-bitcoin-didnt-become-the-next-gen-currency/</link>
+      <pubDate>Tue, 20 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2015-01-20-why-bitcoin-didnt-become-the-next-gen-currency/</guid>
+      <description>Bitcoin is a wonderful project, it make money decentralized, created a currency that no one can control. But why didn&amp;rsquo;t it become the next generation currency?
+##Mining Progress
+Traditionally, the production process of currency should be hard and the difficulty should be same for everyone. For example, gold was once a currency that used globally, and recognized universally. The term mining origin from this.
+Mining process of Bitcoin is a similar process.</description>
+    </item>
+    
+    <item>
+      <title>$如何验证信息的真伪</title>
+      <link>https://kkdev.org/post/2015-01-20-how-to-verify-information/</link>
+      <pubDate>Tue, 20 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2015-01-20-how-to-verify-information/</guid>
+      <description>如何鉴定信息的真伪
+在这个时代,分析信息的能力往往比得到信息的能力更重要,那么我们应该如何的鉴定自己得到的信息的真假呢?
+###对于文字信息,最好的方法是换个地方/语言再去搜索.
+由于文字信息的创建相对来说较为容易,比较难从中直接验证真伪.(某些文章除外,比如高中生对于18年前的事历历在目)
+由于一般的信息的传播速度较快,容易使搜索的内容同质化,我的建议是使用另一个语言作为搜索的关键词进行搜索,由于翻译过程需要比复制粘帖更多的时间和精力.不真实的内容不容易被翻译为多种语言.
+###对于图片的信息,最好的方式是使用图片搜索
+搜索引擎都会有按图片搜索图片的功能.(对我指的是Google,对于国产的就不评论了)
+由于图片信息较难从头伪造,大多数创造事实的人都会使用几张图片拼接而成为配图.
+使用相似图片搜索功能可以较好对图片的来源进行调查.
+一般引索越早的出处越容易是原始来源.
+###总结以上两条去Google一下就好</description>
+    </item>
+    
+    <item>
+      <title>$仙人球的故事-对于小草来说,这个世界没有冬天</title>
+      <link>https://kkdev.org/post/2014-07-16-story-of-cactus-3/</link>
+      <pubDate>Wed, 16 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2014-07-16-story-of-cactus-3/</guid>
+      <description>(童话视角)
+夏天到了.
+在一个初夏的夜里,仙人球像往常一样对小草讲着自己的故事.他讲到,再过半年,就会到冬天,在冬天,会下雪,会有人打雪仗,会有欢声笑语.
+可是,小草说,对于我,这个世界没有冬天.
+仙人球不解,于是问道,为什么.
+小草说,因为,我是一株草,一岁一枯荣的草.对于一个只有三季的生命而言,又如何看到雪在空中飞舞?
+仙人球一时间惘然.他从未想过,原来,这个世界上,还有生物不必经历冬天,可是,没有冬天,也就以为者也将错过接下来的春天.
+小草又补充道,野火烧不禁,春风吹又生嘛,待到明年春天还有有同样的草长出来.
+仙人球说,不,明年长出的草是另外的一株了.
+小草说,也许,这就是命运,当你看到希望时,就会看到黑暗.造化弄人,在你感觉到最美的夏天时,你才知道,你周围有一株小草不会和你一起经历下一个夏天.
+望着小草,仙人球有一种无助的伤感.
+(未完待续)</description>
+    </item>
+    
+    <item>
+      <title>$仙人球的故事-对着背影说再见</title>
+      <link>https://kkdev.org/post/2014-07-16-story-of-cactus-5/</link>
+      <pubDate>Wed, 16 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2014-07-16-story-of-cactus-5/</guid>
+      <description>(童话视角)
+深秋的一天,仙人球已经注意到,小草的叶子已经开始发黄.
+他对小草说,有些话,再不说就来不及了.
+十分感谢你陪我度过这样一个有趣的一年,也就是三个季节
+因为有你,这个夏天,我不再独自欣赏美景.
+感谢短暂将不完美隐去,
+小草的回应仅仅是在秋风中的摇摆.
+仙人球明白,到头来,他在对背影说再见.
+他想象者,如果小草还在,她一定会说,感谢你陪伴我短暂的一生.
+可是这仅仅是想像.
+也许,分别并不可怕,可怕的是对着背影说再见.
+这时,小草虚弱的声音说,
+骗你呢,其实我还在.
+感谢你陪伴我短暂的一生.
+本想再多看看你懊悔的样子,但是,再晚些就没有机会说再见了.
+要记得早点说再见,要不晚了,就只能后悔了.
+下次注意.
+望着小草的背影,仙人球说,恩.
+(未完待续)</description>
+    </item>
+    
+    <item>
+      <title>$仙人球的故事-尾声</title>
+      <link>https://kkdev.org/post/2014-07-16-story-of-cactus-6/</link>
+      <pubDate>Wed, 16 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2014-07-16-story-of-cactus-6/</guid>
+      <description>过了一年,我又去看望我的仙人球.
+这回,我忽然发现在仙人球的盆里还长着一个杂草,还挨在仙人球上,看似没对仙人球的生长起什么不利影响.
+拔了拔,根还挺结实的,算了,不管了,之前多少年不管也没有什么事情.
+窗外,白雪皑皑.
+##隐藏的故事另一条故事线##
+也许,永远也没有人能看懂.
+B5E40206008CBFB02EA6EBFF3041635E0B4306E92FFA9B87329E9D1EA79F8A2A2B188C9461A11649E1B2BCB001E7CA6591C688E844AA466CFBCE817B88EBE4A997ABAF4118B088A0AC07D9DA6F9B898D20E1163D625CF1F4E708A37CA59F7C8B09452C9E1C9A051D8345B1F591CF88FB82EE7323A60CD788EA93A7CECBB6C3A278D95387089BAE217E2D1341603E80B58BD1ACB626ABAC26F7CAC0A52C70320EE007785D033E3BB5C7F57B0924DAEC11DC258623BDCFEBDDE1085C5F23990498938DB8D83246EE179F55587D96EC24BB689C28D5DBEC001CB9A787D3B640E5461EBD6BD9AA691EAEB9DB8310B6F304EE2976DAFE8E5A77880F62E13CB11C1AD64E956E0EE7B268F6B9AE5931248AE6CB79970CD64ED9AC1BA518242EB4F084883A2BE637C6E630E8FB2276C9760F0EACFD8152FA19D5F1C1624BF52A98A9DAE7CA6EDC95F74BB06A2A390DEF3AEA362E5C8D5CFFB2A2A195C6ABE233A7482618725EDC491B67FEC1FA9CDFE42C8D7512474DCA40B96E7B6B0455080D93740FDEE56EBC8D593385CE1FABF96859FCCBDB38C40F46459CB299E82BB5C7794692FB9E69B9FB4A6F33A4CD742C99C5FCCA9A72344E5B25D2CCCCF9C25382BF02559BB900AF39A2A7A02440F00536FA32D7660440E3FCD59956D35AC8A5737D8F6CA8A1AA3FB5E5540165BF386358C3CD2EC0FAB0E0A43EB30D5C9E6BE60C4517A0DE510FA728BB9F42B756EDE2BE57F3CCDC279D4915C7C255A8EB1A63A25D2D884110CD91068874C17DEF33DD1E9D088E61DFB88379C7A45F92D4B7188E3CC956513E32AAF1236B670D887386D0E9EB32D144DDB1BA892F6DF5540E51DDA52A51122196DB3F91EED153547914E78E9A3273F082A7A2161B7FBA5665373416A1B8B4B21BBCBB528F42FC66F08E546100C7B51D61FEEB191B17BCFFE739370246B46D87951FF179EA105846D8C7A73141AC2C0FC92B690F505419F8D49FC5E340F1E5C74E6D6937BBDBD2EBFFF82938E68FDCC412D845218D743039C9BCC93D9288D73FED81ADEC5935475CC802708D4F50698DE216EFE9B29CC34CF32414D5C4FA42132C994312834F8FF7A74F824195FAF67F560702DB20A2B2E2BBCD429E3DAFDB51E4E5EB6EC6596A73A00A8974171CC5EC8559BEA536C48237CECDA112CD130D89571785218C06A0ACF419AC8B6BF7D13AFEB3D0403D1BE1FE367F7A26C05681F7A11A9806333D272B6EA77893A0FECF1A5582CAC8C44AC700019267C06636B34330B098B5F1E5C83EA792AD4EF340F483FCE955054D7A07547E80AFBA9D8CDF0100B0FE81263C0A05605FCD037223ADB9FBDDC19172B1E7CD092C09EF1DD1409C3FD01FA064AA2672A0CB4DC1845CB31C5BDDF757609E7F7F487009395BAB17C0E7B0E44A84AC72050E0CAC7F1AA22CF0A2EB2FBCB0F95EE313C0A8462BAA7083DBA0B2825500C4F04B3EDA4D068D2F416764CE26EBEEEE86D81C384551BEE7B568860EFB22775A81868C49CF62DEC0E5C0FF4F470DBD4407CE9860FAB9858F0886B15FB25B764A1AC82BCE091DA34DEE19C8B3CB55E1041A00AF5139F82EA6B15489F51824DD39369C5046147D9530144F3A843F991423EAD79854EFCCD4361EEE94ADA769B202F41BE1D442C206C2F5B68B1E2C001DB8987E6389C72B078F5FD41B8FF9AF22217DB0021C9C449AE3A319D0BEE34B19703DFB0DB79804C510B1D2212CA3C7989288C1605C7E03686038B80FA215B34CF00D843D967D7413542CBDFDBF81B6E47C314037ECC618379CAB0B9A5FD1EE85B81816F9E5A506F4393B7D470DBEAF1AAA55C758E5D08E32AC0550034CF1CC45AA37350CCF294AD74FE08748922F034FBC11D25D97F7BB4DB4CB0A55FF32D5B42F01689F9E97BB89A54D5091F0F776A2C9E33F5AB3AD429541C0536CB7FFF62668502175EBAC4F0F5C0BA7E483D6211A0145B3BE2C833F7B9F0152E9C93E1F8E223550ECD5D4DEC8BC5CC176D0915697C9749AFD2B20742F39ABF9D48E8F66F3C2A38090A80612AF843D777FCF385C89A7733A611A5F8BF5BB2785B5217A36CB591A8C1D79E7E128AFE7888C0A68E010FFA908D481A346F9D85BA906A6E14C9A7039CE9F72A0EB437F76C7AE554E7E1437200802BF15C9F4773F0338BEF7C7DED07BDBACAA58E8E3373C7D1C604AD459612E9868B37003C0D29268C40938C7FACF21544387C3B36231157D6C18D58A3461FB606E2817D00758BB9B7135AF6BB4D0EA363765BFB5361DE075832644E59D4BCE9BD6D77043F1308D8B8ABFACFDD037C789C602AA8989261075B668B4937B4D9C56F124182A2AE97B51D88CEDFA0845D8B6806C462C917463E85CCE6DE3E0D8EF5DD1F4C1D832A0E47016DD0C4AF06CD8492C87BEDE0D11222732D4A979FF297F27D295CD78F7CB79D2957E5E856E23D33A1D3612EB0405231ACB98A34FD910E8B15B3DE2EEAA1B86015C438C13DECCBCF4AE35FC1B63CAB234A17333EE1F00F68F3D64A16C981EA800A48731412ADF17B911FC0D0FBFD81A408D46E831A21E3A5F97373D7C890C672925015692151B587818C024422001E2F9F41EFD894658CFA4599A196FE962102C0127A38E3DE8FB594CE5EF8EFB4B76C1D491EE68EC178BFEF4183E8EB14C736E630B84FA2860B30B90412DBEDB9AECCB9C14A8AC124AAFF7603B9FECC70DF7E776EF7DFE35E42C8B8BAC6A645E14BC603008E423CCD6A5521FD054B88C00DE2FD73417A019164F77855B1DE2766C1FF76486E170B70FE32E28CBE0D60E4A84C368860A5A81D4208453FC208EF17691FFCAA863428CC132F93654EAB4E98358D71A2E3548EBD3DE059C899052F254424E59C57B27119EB016331CBE92564EE8C6985E726BF45AA82A87F4518C5220BB5E33F7F46AEC3438548B52498F6282D3F643C5E0452BCC30D0690A32300414B685154FA2F7D3BC6F526C458544649236B5CFBD3D1B9874FBFCABA0178DD42FE274363CCA8DB42C96C6A5659567096D9DE7D905F3D0FBBC923475282D5C1ADF3214077385890AA30967AA51A39AC9CF4991A4500B4EDDD9DAE92EB8443A89FC747ECBDCD879E1850A289484 </description>
+    </item>
+    
+    <item>
+      <title>$仙人球的故事-樱花的颜色</title>
+      <link>https://kkdev.org/post/2014-07-16-story-of-cactus-4/</link>
+      <pubDate>Wed, 16 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2014-07-16-story-of-cactus-4/</guid>
+      <description>(童话视角)
+秋天到了,在一个落花的时节,小草对仙人球说,
+你知道樱花的颜色么?
+仙人球说,尽管我没有见到过,但是我知道,那应该是一种粉色.
+小草又问,那么樱花又因为什么而著名的呢?
+仙人球说,它因为短暂而美好而著名.
+小草说,你知道么,美好的事物往往短暂,你知道为什么么?
+仙人球说,难道是因为美好的事物就注定短暂么?
+小草说,其实不然,
+要知道,普天下的事物本没有真正的完美,本没有真正的美好.
+美好的事物短暂,是因为它在你还没有看到其的缺陷和不足之前,就已经从你的眼前消失.
+童话总是在一切事物的最好的地方结尾.
+然而生活,却让人们目睹原来美好的东西渐渐衰落.
+月,因为有圆,所以有缺,花因为有开,所以有谢.
+樱花在枝头上仅仅一周,来不及泛黄,便落下,因此是美好的象征,更是短暂的象征.
+难道不应该感谢事物的短暂,赞美美好事物的短暂么.
+仙人球说,难不成是短暂成全了美好
+小草说,往往如此.
+(未完待续)</description>
+    </item>
+    
+    <item>
+      <title>$仙人球的故事-新邻居,小草</title>
+      <link>https://kkdev.org/post/2014-07-14-story-of-cactus-2/</link>
+      <pubDate>Mon, 14 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2014-07-14-story-of-cactus-2/</guid>
+      <description>(童话视角)
+仙人球在自己的花盆里望着窗外的景色,窗外是绿色的树木,风轻轻的吹着.
+有一天,在他醒来之时,在自己的边上,发现了一株正在萌发的小草.
+小草刚刚探出头时,仙人球已经注意到到这个新来的邻居了,就在仙人球的不大的花盆的周围,一株绿油油的小草已经伸出了头.
+风轻轻的吹者,小草越长越高.纤细的枝芽与生长缓慢的仙人球有强烈的对比.望着小草,仙人球有一种莫名的欣喜之情.
+晚春,小草已经长的高过了仙人球.二仙人球也要仰视小草了.小草的叶子放在仙人球的刺的中间,显得十分婀娜,分成三瓣的顶部自然的微微垂下的立者,显得十分优雅.
+每天,仙人球都在给小草将自己早年间的故事,而长的早已比他高的小草想孩童一样的听着.
+仙人球有了小草的陪伴,变得十分开心,越发快乐的生长,两个个月长了快一厘米.
+(未完待续)</description>
+    </item>
+    
+    <item>
+      <title>$仙人球的故事-起点</title>
+      <link>https://kkdev.org/post/2014-07-14-story-of-cactus-1origin/</link>
+      <pubDate>Mon, 14 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2014-07-14-story-of-cactus-1origin/</guid>
+      <description>在我很小的时候,我家就有了一个仙人球.
+我还能清楚的记得,我在家里的三轮车上,抱着仙人球,一个全身都是刺.我不知如何是好的看着这个让我望而生畏的奇怪生物.
+就在我家窗台上,这个仙人球独自一人,独自长大,多少其他的花呀草呀,开放,开败,而仙人球都无动于衷.
+直到在今年的春天,我将仙人球移到了在另一个房间的另一个阳台上,这样,仙人球就能照到更多的阳光,我知道,在沙漠,阳光可比水要来的多.
+于是在阳台上,仙人球开始了自己的生活.
+(未完待续)</description>
+    </item>
+    
+    <item>
+      <title>$散列算法和应用</title>
+      <link>https://kkdev.org/post/2014-07-13-/</link>
+      <pubDate>Sun, 13 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2014-07-13-/</guid>
+      <description>本来一直以为有机会直接的面对面的科普关于数据安全的知识，不过现在发现就是一厢情愿，还是写成博客比较好一点。 既然是概述篇，那么，无论你是否有电脑方面得基础，都可以理解这篇文章的内容。
+首先，什么是散列算法。这个名字一看起来就很高大上，但是实际上，它的定义并不复杂。它的基本定义是将输入的数据打乱并将内容缩短.(这也是为什么在这类算法刚刚进入中国的时候在书籍中的翻译叫越压越陷算法.)而在数据经过这样的算法之后产生的结果叫散列值(摘要,指纹).尽管没有方法之间从中恢复原始数据,但是,对于每一个不同的文件,都会有一个不同的散列值(理想的散列算法).因此,散列算法有很大的用处,下面我来一一介绍.
+##完整性校验##
+完整性校验可以让两个人在不传输大量的数据的情况下,比较两个文件的内容.在目前,用途一般是校验通过网络传输的文件的完整性,因为网络传输相对于本地的散列计算来说是一个更加耗时的,使用散列值而不是整个文件进行校验可以显著的提高速度.
+对于使用散列值的校验来说,最大的痛苦在于即使发现了问题,也无法从解决问题,只能面对一个失败的提示.在现代的互联网,通过更加强大的网络速度和网络传输的准确性,这个问题已经有了有效的缓解.但是在互联网的早期,人们发明了par算法来解决这个问题,本篇文章不深入研究.
+在压缩软件中也有类似的机制(是因为在早期的压缩软件压缩完了解压就不是原来的文件了么&amp;gt;.&amp;lt;),对于有压缩密码的压缩包(实际上是其中的一部分),在解压之后会计算一次解压后数据的散列值,如果和之间存储的散列值相同的话,那么这个文件的解压就是成功的,否则就会提示密码错误.
+##密码验证##
+密码大家都很熟悉,但是密码验证的机制却鲜有人知.密码实际上是要存储在电脑上的,否则要如何知道输入的对不对呀.但是,将未经散列的密码存储在电脑上,无论是在登录本地系统或者登录在线帐号,都不是稳妥的做法,因为一旦电脑被直接取出硬盘,那么硬盘上的任何内容都可以被直接查看.这时,未经散列的密码也会被轻而易举的得到.这也就导致攻击者可以在相当低的成本下,在不被发现的情况下继续保持对于电脑的控制权.更糟糕的是,如果这个密码还在其他的地方被使用,那么攻击者也同样拥有了在其他地方的密码,这样一来,后果十分凄惨.
+如果将密码在散列之后存储,就会有不一样的故事,攻击者就算已经得到了散列后的密码,依然无法访问系统,原因很简单,密码在被提交后会被散列,但是将散列值再散列一次之后得到的结果并不是本身,而是散列值的散列值.如果想知道一个散列值所代表的内容,成本十分的高昂,对于越长的密码,所需要的计算成本越大.因此在一定程度上而言,储存密码的散列阻止了攻击.
+还有另一种方法,就是直接修改已经被记录的散列值.在这种情况下,攻击者确实可以得到对于系统的控制,但是,却无法在不让他人发现的情况下完成,一旦散列值被修改,原来的密码便无法再次登录,因此可以很快的发现被攻击,并采取减少损失的措施.
+##计算量证明##
+这个比较反人类一点,之前的两个是用来校验的,而这个第3种用法,是用来创造的(实际上也没有创造什么).
+散列函数的输入和输出完全不能建立出任何有效的关联,所以对于一遍的使用来说,两个散列值之间只能比较是否相等,比较大于小于,是没有实际意义的.但是,在如比特币中,通过改变数据,使数据的散列值小于一个值成为了很多电脑计算的目标.
+从某种意义上来讲,散列的结果就是随机数,如果要使这个数在一个范围之内,就需要尝试一定量的次数.又与随机数不同,对于同一个数据来说,同样的输入会导致相同的结果,所以可以验证数据的产生者确实经过了大量的尝试才得出这个成功品的.
+散列函数的基本用法到这里就结束了,作为密码学的一部分,散列函数为人们通过技术改变生活提供了很好的平台.尽管在设计的时候可能并没有想到散列函数会有这样多的用途,但是,其却却实实成为了构建更好的生活的基石.(跳跃有点大&amp;hellip;..)</description>
+    </item>
+    
+    <item>
+      <title>$地理历史，我想对你们说声再见</title>
+      <link>https://kkdev.org/post/2014-01-08-goodbye-historygeography-as-subject/</link>
+      <pubDate>Wed, 08 Jan 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2014-01-08-goodbye-historygeography-as-subject/</guid>
+      <description>今天上午，我刚刚完成会考，这意味着我在中学阶段的地理历史学习的结束。交了考卷后，我的心情久久不能平息。
+还记得在我初中的时候，我们刚刚有地理历史课，课上讲的知识在现在看来应该算是简单的吧，在上完几节主科后，听一节副科着实是享受，要做的仅仅是听一听，而非紧张的记笔记。在那时，看着书本，我的心中想着，以后一直会有地理课的吧。
+就这样，过了不少时间，我长高了，了解的事情也多了，地理历史还是照样的上，在课上，我了解了许多关于过去的故事，在老师的口中，祖国的河山的每一个方面都被描述在，历史课上，上课铃与下课铃之间竟是上百年，在了解历史的同时我也知道了朝代的兴亡，看到历史喜剧性的重演，在推演中慢慢成长的中华民族，崛起，失落，再崛起。
+后来，快要中考了，班上的同学纷纷在副科课上写作业，复习题，而我呢，则还是认真的听着副科，因为，我不是因为分而去听副科的，我觉得在副科中的趣味实在是生活的点缀。在历史课上，老师看着一个个倒下的同学，一个个正在低头写作业的身影，依旧精神饱满的讲着，犹如下面有千万人聆听。
+再之后，我就上了高中，在同学变了，老师变了，不变的还是这些副科，然而，我却知道原来，在高中还有会考，还有，在会考后，这些课就不学了。
+尽管我第一次听说这件事，不过我不太吃惊，想，反正还有一年半呢，怕什么，于是，继续想原来一样的听历史地理。
+上了高中后，历史地理似乎重新讲了一遍，这也就意味着我之前初中上课的认真听讲是无用的。其实也不是无用，因为，学习，其实重在过程。
+还是那样的我，坐在不同的教室里，听同样的课。在高中，不同的老师，不同的风格，相同的却还是一节课讲遍南北，一节课，通晓百年。
+我知道了人类认识自己，认识世界的历史，我知道了我所居住的世界内的各个圈子，在循环间，不循环的是生命演化的过程。在不会回流的历史中，历史还是一次次的重演。
+时间过得很快，很快，在不经意间，时间过去了一年半，到了会考的时候。之前，我一直以为的很久很久，现在，就在眼前。 之前那些从来不学习历史地理的同学，纷纷加班加点，我却在想，这一切原来终究有个结束。
+我知道，根据热力学第二定律，这个世界上并没有永恒的东西，一节课也是，一个学期也是，一个学科也是。但从来我都不知道，原来，这一切就在悄然中发生。
+在最后一节地理课上，我们站了起来，对老师说谢谢，老师似乎被吓到了。在我们的欢送中，离开班级。
+在会考考场上，我自信的拿起笔，写上自己的名字。迎接最后一战。
+也许，一次考试是告别一个学科最好的方式。
+感谢几年来的历史地理的老师们，这也许是我在中学阶段学习历史地理的终点，却不是我对学习历史和地理的兴趣的终点。
+大幕刚刚徐徐拉开。</description>
+    </item>
+    
+    <item>
+      <title>$比特信术语表</title>
+      <link>https://kkdev.org/post/2014-01-07-bitmessage-term-table/</link>
+      <pubDate>Tue, 07 Jan 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2014-01-07-bitmessage-term-table/</guid>
+      <description>本次翻译中定义的术语
+| English | Chinese | | ++++++++++++- |++++++++++++-| |Subscriptions | 订阅| |Label | 标签| |Stream | 节点流| |peer | 节点| |public key | 公匙| |Inventory lookups | 同步请求| |Address | 地址| |Bitmessage | 比特信| |Broadcast | 广播| |Address Book | 地址本| |person-to-person message |点对点消息| |Trash | 回收站| |encryption key | 加密密钥| |acknowledgement | 回执| |passphrase | 密钥| |Chan | 频道| |Resends Expire | 重发超时|</description>
+    </item>
+    
+    <item>
+      <title>$Speech at School, Full transcript.</title>
+      <link>https://kkdev.org/post/2013-11-18-speech-at-school-full-transcript/</link>
+      <pubDate>Mon, 18 Nov 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2013-11-18-speech-at-school-full-transcript/</guid>
+      <description>#Dream, the Vector# What does vector mean? Vector stands for the combination of a direction and an offset. A dream will provide both of them, for, so long as you hold a dream, you know where to go and you have get the willpower you will need to achieve it.
+Where there is a dream, there is a way. We know one thing deeply in our mind, a movement will not take place unless it has a target.</description>
+    </item>
+    
+    <item>
+      <title>#https:,准备好了么?</title>
+      <link>https://kkdev.org/post/2013-10-17-httpsare-you-here/</link>
+      <pubDate>Thu, 17 Oct 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2013-10-17-httpsare-you-here/</guid>
+      <description>新浪微博（不支持）
+人人网（不支持)
+百度搜索（不支持）
+百度网盘（不支持）
+Twitter(支持)
+谷歌网盘（支持）
+华为网盘（不支持）
+新浪网盘（不支持）</description>
+    </item>
+    
+    <item>
+      <title>#实验：什么信息会被窃取，在什么条件下</title>
+      <link>https://kkdev.org/post/2013-10-17-now-we-will-see-how-the-wireshark-do/</link>
+      <pubDate>Thu, 17 Oct 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2013-10-17-now-we-will-see-how-the-wireshark-do/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>$如何理解文章标题</title>
+      <link>https://kkdev.org/post/2013-08-03-how-to-understand-post/</link>
+      <pubDate>Sat, 03 Aug 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://kkdev.org/post/2013-08-03-how-to-understand-post/</guid>
+      <description>我一直致力于写出人类可读的博客，根据以前的情况，经常能写出普通人无法理解的文章，导致对与其他的文章失去信心，所以在这个博客中我将会通过标题说明文章的理解难度.
+#如何理解文章标题#
+如果您看到以 $ 为开始的标题说明这个文章适合 所有人 阅读.
+如果您看到以 # 为开始的标题说明这个文章适合 有一定电脑能力的人 阅读, 阅读这些文章需要特殊的知识,能力或工具.
+如果您看到以 NSFW 为结尾的标题说明这个文章 不 适合在公开场合和别人的监视下阅读.</description>
+    </item>
+    
+  </channel>
+</rss>

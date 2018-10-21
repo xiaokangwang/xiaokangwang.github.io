@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>建站 on KKDEV - Shelikhoo &#39;s Personal Blog</title>
+    <link>https://kkdev.org/tags/%E5%BB%BA%E7%AB%99/</link>
+    <description>Recent content in 建站 on KKDEV - Shelikhoo &#39;s Personal Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 22 Jun 2015 14:25:56 +0800</lastBuildDate>
+    
+	<atom:link href="https://kkdev.org/tags/%E5%BB%BA%E7%AB%99/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>网站进行了大规模迁移</title>
+      <link>https://kkdev.org/post/switch-to-new-droplet/</link>
+      <pubDate>Mon, 22 Jun 2015 14:25:56 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/switch-to-new-droplet/</guid>
+      <description>在之前的一年中，我的VPS一直或多或少的有积累性问题，而很多站点也已经崩溃。
+在选择新的VPS的地点时，我发现DO的SFO区域的ping比法国的要地，不过丢包问题暂时没有进行具体的测量。
+顺便提一句，zend真心不能忍，动不动就CPU超限。连一个页面都加载不全。。。。。</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Rfc on KKDEV - Shelikhoo &#39;s Personal Blog</title>
+    <link>https://kkdev.org/tags/rfc/</link>
+    <description>Recent content in Rfc on KKDEV - Shelikhoo &#39;s Personal Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 03 Sep 2017 17:58:20 +0800</lastBuildDate>
+    
+	<atom:link href="https://kkdev.org/tags/rfc/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>V2Ray RFC: V2Ray Pipe Transport Proposal</title>
+      <link>https://kkdev.org/post/v2ray-pipe-transport/</link>
+      <pubDate>Sun, 03 Sep 2017 17:58:20 +0800</pubDate>
+      
+      <guid>https://kkdev.org/post/v2ray-pipe-transport/</guid>
+      <description>V2Ray is designed to be a flexible network tool for developers. However, in term of developer friendliness it have suffered a bad reputation as being hard to master both for user and third-party developers.
+Here, I would like to propose a new stub transport that is intended to reduce the difficulty for developing a transport for V2Ray, and remove the necessity of commitment for development. Pipe transport use operating system’s fork and/or unix domain socket capability.</description>
+    </item>
+    
+  </channel>
+</rss>
